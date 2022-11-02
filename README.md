@@ -33,6 +33,7 @@ This program may sound like maleware at first, but if you're unsure, just read t
 | --wemod-dir <dir>         	| Path to your WeMod dir. By default, this is "%localappdata%/WeMod".                           	|
 | --wemod-version <version> 	| The version to patch (example: 8.3.6). By default, this will be the latest version installed. 	|
 | --asar-bin <bin>          	| Path to the asar bin. By default, this will be "Program Files/nodejs/asar.cmd".               	|
+| -dev                      	| Enables dev tools when opening WeMod with the argument "-dev"                                  	|
 
 <br/>
 

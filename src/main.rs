@@ -87,7 +87,7 @@ fn get_latest_app_dir(wemod_dir: PathBuf) -> std::io::Result<PathBuf> {
         .path())
 }
 
-fn patch(extracted_resource_dir: PathBuf) -> std::io::Result<()> {
+fn patch(extracted_resource_dir: PathBuf, flags: Vec<String>) -> std::io::Result<()> {
     let app_bundle = extracted_resource_dir.join("output").join("app-bundle.js");
 
     if !app_bundle.exists() || !app_bundle.is_file() {
@@ -115,6 +115,28 @@ fn patch(extracted_resource_dir: PathBuf) -> std::io::Result<()> {
 
     println!("Done.");
 
+    if flags
+        .iter()
+        .find(|flag| flag.to_string().eq("dev"))
+        .is_some()
+    {
+        let index_js = extracted_resource_dir.join("index.js");
+
+        if !index_js.exists() || !index_js.is_file() {
+            err("index.js not found. your WeMod version may not be supported.".to_string())
+        }
+
+        println!("Patching index.js.");
+
+        let index_js_contents = fs::read_to_string(&index_js)?
+            .replace("g.devMode", "process.argv.includes('-dev')")
+            .replace("_.devMode", "process.argv.includes('-dev')");
+
+        fs::write(index_js, index_js_contents)?;
+
+        println!("Done.")
+    }
+
     Ok(())
 }
 
@@ -128,7 +150,7 @@ fn main() -> std::io::Result<()> {
         err(format!("Your OS ({}) is not supported.", env::consts::OS))
     }
 
-    let (_, _, opts) = SimpleArgs::new(env::args().collect()).parse();
+    let (_, flags, opts) = SimpleArgs::new(env::args().collect()).parse();
 
     let wemod_folder = if opts.contains_key("wemod-dir") {
         PathBuf::from(opts.get("wemod-dir").unwrap())
@@ -194,6 +216,11 @@ fn main() -> std::io::Result<()> {
 
     println!("Extracting resources...");
 
+    fs::copy(
+        resource_dir.join("app.asar"),
+        resource_dir.join("app.asar.old"),
+    )?;
+
     run_asar(
         asar_bin.clone(),
         resource_dir.clone(),
@@ -208,7 +235,7 @@ fn main() -> std::io::Result<()> {
 
     let extracted_resource_dir = resource_dir.join("app");
 
-    patch(extracted_resource_dir.clone())?;
+    patch(extracted_resource_dir.clone(), flags)?;
 
     println!("Repacking resources...");
 
