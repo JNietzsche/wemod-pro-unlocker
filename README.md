@@ -5,7 +5,6 @@
 </div>
 
 ## ⚠️ DISCLAIMER: Eventhough I don't think it is likely, WeMod could in theory ban you for this. I take no responsibilty for any damage caused by the usage of this program.
-### Also, this program is legally ok since it only patches the software and does not distribute any proprietary binaries.
 
 <br/>
 
@@ -28,12 +27,13 @@ This program may sound like maleware at first, but if you're unsure, just read t
 <br/>
 
 ## 🏃‍♂️ Usage
-| Argument                  	| Description                                                                                   	|
-|---------------------------	|-----------------------------------------------------------------------------------------------	|
-| --wemod-dir <dir>         	| Path to your WeMod dir. By default, this is "%localappdata%/WeMod".                           	|
-| --wemod-version <version> 	| The version to patch (example: 8.3.6). By default, this will be the latest version installed. 	|
-| --asar-bin <bin>          	| Path to the asar bin. By default, this will be "Program Files/nodejs/asar.cmd".               	|
-| -dev                      	| When used, WeMod will be patched to enable dev mode when opening it with "-dev".               	|
+| Argument                  	| Description                                                                                                 	| Example
+|---------------------------	|-------------------------------------------------------------------------------------------------------------	|----------------------------------
+| --wemod-dir <dir>         	| Path to your WeMod dir. By default, this is "%localappdata%/WeMod".                                         	| C:\WeMod
+| --wemod-version <version> 	| The version to patch. By default, this will be the latest version installed. 	                                | 8.3.6
+| --asar-bin <bin>          	| Path to the asar bin. By default, this will be "Program Files/nodejs/asar.cmd".                             	| C:\asar\asar.cmd
+| -dev                      	| When used, WeMod will be patched to enable dev mode when opening it with "-dev".                             	| -----
+| --account <json>            | Overwrites the account data. You can find all available options by searching for /v3/account in the dev tools | username:'myaccount',email:'test'
 
 <br/>
 

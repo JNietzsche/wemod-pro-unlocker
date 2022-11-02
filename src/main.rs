@@ -2,6 +2,7 @@ use colored::Colorize;
 use simpleargs::SimpleArgs;
 use std::{
     cmp::Ordering,
+    collections::HashMap,
     env,
     fs::{self, DirEntry},
     io::ErrorKind::NotFound,
@@ -87,7 +88,11 @@ fn get_latest_app_dir(wemod_dir: PathBuf) -> std::io::Result<PathBuf> {
         .path())
 }
 
-fn patch(extracted_resource_dir: PathBuf, flags: Vec<String>) -> std::io::Result<()> {
+fn patch(
+    extracted_resource_dir: PathBuf,
+    opts: HashMap<String, String>,
+    flags: Vec<String>,
+) -> std::io::Result<()> {
     let app_bundle = extracted_resource_dir.join("output").join("app-bundle.js");
 
     if !app_bundle.exists() || !app_bundle.is_file() {
@@ -99,7 +104,11 @@ fn patch(extracted_resource_dir: PathBuf, flags: Vec<String>) -> std::io::Result
     let mut app_bundle_contents =
         fs::read_to_string(&app_bundle).expect("failed to read app bundle");
 
-    let app_bundle_patch = "if(new URL(e.url).pathname.endsWith('/account')){return{...JSON.parse(t),subscription: 'pro'}}";
+    let app_bundle_patch = "if(new URL(e.url).pathname.endsWith('/account')){return{...JSON.parse(t),subscription: 'pro',...{".to_string() + if opts.contains_key("account") {
+        opts.get("account").unwrap()
+    } else {
+        ""
+    } + "}}}";
     let insert_app_bundle_patch_at =
         "if(e.headers.get(\"Content-Type\")===\"application/json\"){try{";
 
@@ -108,7 +117,7 @@ fn patch(extracted_resource_dir: PathBuf, flags: Vec<String>) -> std::io::Result
             .find(insert_app_bundle_patch_at)
             .expect("failed to patch app bundle. WeMod may have changed their program")
             + insert_app_bundle_patch_at.len(),
-        app_bundle_patch,
+        app_bundle_patch.as_str(),
     );
 
     fs::write(&app_bundle, app_bundle_contents)?;
@@ -216,10 +225,12 @@ fn main() -> std::io::Result<()> {
 
     println!("Extracting resources...");
 
-    fs::copy(
-        resource_dir.join("app.asar"),
-        resource_dir.join("app.asar.old"),
-    )?;
+    if !resource_dir.join("app.asar.old").exists() {
+        fs::copy(
+            resource_dir.join("app.asar"),
+            resource_dir.join("app.asar.old"),
+        )?;
+    }
 
     run_asar(
         asar_bin.clone(),
@@ -235,7 +246,7 @@ fn main() -> std::io::Result<()> {
 
     let extracted_resource_dir = resource_dir.join("app");
 
-    patch(extracted_resource_dir.clone(), flags)?;
+    patch(extracted_resource_dir.clone(), opts, flags)?;
 
     println!("Repacking resources...");
 

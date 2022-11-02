@@ -59,7 +59,7 @@ checksum = "fe88247b92c1df6b6de80ddc290f3976dbdf2f5f5d3fd049a9fb598c6dd5ca73"
 
 [[package]]
 name = "wemod-pro-unlocker"
-version = "0.2.1"
+version = "0.3.0"
 dependencies = [
  "colored",
  "simple--args",
