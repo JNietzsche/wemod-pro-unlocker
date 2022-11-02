@@ -2,6 +2,8 @@
 name = "wemod-pro-unlocker"
 description = "This program patches the WeMod app to think you're a pro subscriber"
 license = "MIT"
+homepage = "https://github.com/bennett-sh/wemod-pro-unlocker"
+repository = "https://github.com/bennett-sh/wemod-pro-unlocker"
 version = "0.1.1"
 edition = "2021"
 
