@@ -104,11 +104,14 @@ fn patch(
     let mut app_bundle_contents =
         fs::read_to_string(&app_bundle).expect("failed to read app bundle");
 
-    let app_bundle_patch = "if(new URL(e.url).pathname.endsWith('/account')){return{...JSON.parse(t),subscription: 'pro',...{".to_string() + if opts.contains_key("account") {
-        opts.get("account").unwrap()
-    } else {
-        ""
-    } + "}}}";
+    let app_bundle_patch = include_str!("fetchIntercept.js").to_string().replace(
+        "/*{%account%}*/",
+        if opts.contains_key("account") {
+            opts.get("account").unwrap()
+        } else {
+            ""
+        },
+    );
     let insert_app_bundle_patch_at =
         "if(e.headers.get(\"Content-Type\")===\"application/json\"){try{";
 
@@ -225,7 +228,12 @@ fn main() -> std::io::Result<()> {
 
     println!("Extracting resources...");
 
-    if !resource_dir.join("app.asar.old").exists() {
+    if resource_dir.join("app.asar.old").exists() {
+        fs::copy(
+            resource_dir.join("app.asar.old"),
+            resource_dir.join("app.asar"),
+        )?;
+    } else {
         fs::copy(
             resource_dir.join("app.asar"),
             resource_dir.join("app.asar.old"),
