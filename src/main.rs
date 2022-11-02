@@ -28,7 +28,7 @@ fn get_version_from_path(path: PathBuf) -> String {
         .unwrap()
         .to_str()
         .unwrap()
-        .replacen("app-", "", 0);
+        .replacen("app-", "", 1);
 }
 
 fn sort_app_versions(a: &DirEntry, b: &DirEntry) -> Ordering {
@@ -144,7 +144,14 @@ fn main() -> std::io::Result<()> {
     }
 
     let wemod_version_folder = if opts.contains_key("wemod-version") {
-        let folder = PathBuf::from(opts.get("wemod-version").unwrap());
+        let folder = wemod_folder.join(PathBuf::from(
+            "app-".to_string()
+                + PathBuf::from(opts.get("wemod-version").unwrap())
+                    .file_name()
+                    .unwrap()
+                    .to_str()
+                    .unwrap(),
+        ));
 
         if !folder.exists() {
             err("WeMod version specified does not exist.".to_string())

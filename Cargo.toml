@@ -2,7 +2,7 @@
 name = "wemod-pro-unlocker"
 description = "This program patches the WeMod app to think you're a pro subscriber"
 license = "MIT"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 
 [dependencies]
