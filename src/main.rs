@@ -99,7 +99,7 @@ fn patch(
         err("app-bundle.js not found. your WeMod version may not be supported.".to_string());
     }
 
-    println!("Patching app bundle.");
+    println!("Patching app bundle...");
 
     let mut app_bundle_contents =
         fs::read_to_string(&app_bundle).expect("failed to read app bundle");
@@ -138,7 +138,7 @@ fn patch(
             err("index.js not found. your WeMod version may not be supported.".to_string())
         }
 
-        println!("Patching index.js.");
+        println!("Patching index.js...");
 
         let index_js_contents = fs::read_to_string(&index_js)?
             .replace("g.devMode", "process.argv.includes('-dev')")
