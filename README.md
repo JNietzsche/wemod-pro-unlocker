@@ -21,7 +21,7 @@ For installation, you have three options.
 cargo install wemod-pro-unlocker
 wemod-pro-unlocker
 ```
-2. (Not recommended) Download a build from the releases tab
+2. (Not recommended) Download a build from the releases tab <br/>
 3. (Not recommended) Manually build it from source
 
 <br/>
