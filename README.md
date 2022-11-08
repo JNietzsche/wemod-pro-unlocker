@@ -16,12 +16,12 @@
 ## ⬇️ Installation
 #### Note: after following any of the steps below, you must restart WeMod (make sure to also close it from the tray)
 For installation, you have three options.
-1. Download a build from the releases tab
-2. Install Cargo, then run
+1. Install Cargo, then run
 ```
 cargo install wemod-pro-unlocker
 wemod-pro-unlocker
 ```
+2. (Not recommended) Download a build from the releases tab
 3. (Not recommended) Manually build it from source
 
 <br/>
