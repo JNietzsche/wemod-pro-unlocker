@@ -44,7 +44,7 @@ fn get_asar_dirs() -> Vec<String> {
         known_folder_path(FolderId::ProgramFiles)
             .unwrap()
             .join("nodejs")
-            .join("node-modules")
+            .join("node_modules")
             .join(".bin"),
     );
     result.push(
