@@ -88,11 +88,7 @@ fn get_latest_app_dir(wemod_dir: PathBuf) -> std::io::Result<PathBuf> {
         .path())
 }
 
-fn patch(
-    extracted_resource_dir: PathBuf,
-    opts: HashMap<String, String>,
-    flags: Vec<String>,
-) -> std::io::Result<()> {
+fn patch(extracted_resource_dir: PathBuf, opts: HashMap<String, String>) -> std::io::Result<()> {
     let app_bundle = extracted_resource_dir.join("output").join("app-bundle.js");
 
     if !app_bundle.exists() || !app_bundle.is_file() {
@@ -176,7 +172,7 @@ fn main() -> std::io::Result<()> {
         err(format!("Your OS ({}) is not supported.", env::consts::OS))
     }
 
-    let (_, flags, opts) = SimpleArgs::new(env::args().collect()).parse();
+    let (_cmds, _flags, opts) = SimpleArgs::new(env::args().collect()).parse();
 
     let wemod_folder = if opts.contains_key("wemod-dir") {
         PathBuf::from(opts.get("wemod-dir").unwrap())
@@ -268,7 +264,7 @@ fn main() -> std::io::Result<()> {
 
     let extracted_resource_dir = resource_dir.join("app");
 
-    patch(extracted_resource_dir.clone(), opts, flags)?;
+    patch(extracted_resource_dir.clone(), opts)?;
 
     println!("Repacking resources...");
 
