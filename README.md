@@ -16,13 +16,19 @@
 ## ⬇️ Installation
 #### Note: after following any of the steps below, you must restart WeMod (make sure to also close it from the tray)
 For installation, you have three options.
-1. Download a build from the releases tab
-2. Install Cargo, then run
+1. Install Cargo, then run
 ```
 cargo install wemod-pro-unlocker
 wemod-pro-unlocker
 ```
+2. (Not recommended) Download a build from the releases tab <br/>
 3. (Not recommended) Manually build it from source
+
+<br/>
+
+## ✅❎ What does not work?
+- Saving Mods (this was available until WeMod v8.3.8, which you can download from [here](https://storage-cdn.wemod.com/app/releases/stable/WeMod-8.3.8.exe))
+- RC From Phone (this feature is not client-side so you actually need pro; there's nothing I can do)
 
 <br/>
 
@@ -32,7 +38,6 @@ wemod-pro-unlocker
 | --wemod-dir <dir>         	| Path to your WeMod dir. By default, this is "%localappdata%/WeMod".                                         	| C:\WeMod
 | --wemod-version <version> 	| The version to patch. By default, this will be the latest version installed. 	                                | 8.3.6
 | --asar-bin <bin>          	| Path to the asar bin. By default, this will be "Program Files/nodejs/asar.cmd".                             	| C:\asar\asar.cmd
-| -dev                      	| When used, WeMod will be patched to enable dev mode when opening it with "-dev".                             	| -----
 | --account <json>            | Overwrites the account data. You can find all available options by searching for /v3/account in the dev tools | username:'myaccount',email:'test'
 
 <br/>

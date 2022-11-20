@@ -96,7 +96,7 @@ fn patch(
     let app_bundle = extracted_resource_dir.join("output").join("app-bundle.js");
 
     if !app_bundle.exists() || !app_bundle.is_file() {
-        err("app-bundle.js not found. your WeMod version may not be supported.".to_string());
+        err("app-bundle.js not found. Please open an issue on the GitHub page.".to_string());
     }
 
     println!("Patching app bundle...");
@@ -127,27 +127,41 @@ fn patch(
 
     println!("Done.");
 
-    if flags
-        .iter()
-        .find(|flag| flag.to_string().eq("dev"))
-        .is_some()
-    {
-        let index_js = extracted_resource_dir.join("index.js");
+    println!("Patching vendor bundle...");
 
-        if !index_js.exists() || !index_js.is_file() {
-            err("index.js not found. your WeMod version may not be supported.".to_string())
-        }
+    let vendor_bundle = extracted_resource_dir
+        .join("output")
+        .join("vendor-bundle.js");
 
-        println!("Patching index.js...");
-
-        let index_js_contents = fs::read_to_string(&index_js)?
-            .replace("g.devMode", "process.argv.includes('-dev')")
-            .replace("_.devMode", "process.argv.includes('-dev')");
-
-        fs::write(index_js, index_js_contents)?;
-
-        println!("Done.")
+    if !vendor_bundle.exists() || !vendor_bundle.is_file() {
+        err("vendor-bundle.js not found. Please open an issue on the GitHub page.".to_string());
     }
+
+    let mut vendor_bundle_contents =
+        fs::read_to_string(&vendor_bundle).expect("failed to read vendor bundle");
+    let vendor_bundle_patch = include_str!("vendorPatch.js").to_string();
+
+    vendor_bundle_contents.insert_str(0, &vendor_bundle_patch);
+
+    fs::write(&vendor_bundle, vendor_bundle_contents)?;
+
+    println!("Done.");
+
+    let index_js = extracted_resource_dir.join("index.js");
+
+    if !index_js.exists() || !index_js.is_file() {
+        err("index.js not found. your WeMod version may not be supported.".to_string())
+    }
+
+    println!("Patching index.js...");
+
+    let index_js_contents = fs::read_to_string(&index_js)?
+        .replace("g.devMode", "process.argv.includes('-dev')")
+        .replace("_.devMode", "process.argv.includes('-dev')");
+
+    fs::write(index_js, index_js_contents)?;
+
+    println!("Done.");
 
     Ok(())
 }
