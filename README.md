@@ -11,6 +11,11 @@
 
 ### ⚠️ DISCLAIMER: Eventhough I don't think it is likely, WeMod could in theory ban you for this. I take no responsibilty for any damage caused by the usage of this program.
 
+### ℹ️ INFORMATION: With the latest update, WeMod semi-broke this patcher
+You still have stuff like themes or the in-game overlay but you won't be able to click-to-toggle your cheats anymore. I've already figured out how to bypass this change but I'm still figuring out how to build it into the patcher.
+
+#### The workaround is to start "wemod-pro-unlocker" and WeMod.exe with "-dev", open the game page, press F12, goto console and pasting ```document.querySelectorAll('.cheats-wrapper button.pro-upgrade').forEach(element => element.remove());```.
+
 <br/>
 
 ## ⬇️ Installation
