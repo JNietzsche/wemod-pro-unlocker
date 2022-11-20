@@ -32,6 +32,33 @@ fn get_version_from_path(path: PathBuf) -> String {
         .replacen("app-", "", 1);
 }
 
+fn get_asar_dirs() -> Vec<String> {
+    let mut result = vec![];
+
+    result.push(
+        known_folder_path(FolderId::ProgramFiles)
+            .unwrap()
+            .join("nodejs"),
+    );
+    result.push(
+        known_folder_path(FolderId::ProgramFiles)
+            .unwrap()
+            .join("nodejs")
+            .join("node-modules")
+            .join(".bin"),
+    );
+    result.push(
+        known_folder_path(FolderId::RoamingAppData)
+            .unwrap()
+            .join("npm"),
+    );
+
+    result
+        .iter_mut()
+        .map(|path| path.to_str().unwrap().to_string())
+        .collect::<Vec<String>>()
+}
+
 fn sort_app_versions(a: &DirEntry, b: &DirEntry) -> Ordering {
     return match compare_versions(
         get_version_from_dir_entry(a.clone()),
@@ -45,8 +72,16 @@ fn sort_app_versions(a: &DirEntry, b: &DirEntry) -> Ordering {
     };
 }
 
-fn run_asar(prog: PathBuf, dir: PathBuf, args: Vec<String>) {
-    let cmd = Command::new(prog.to_str().unwrap())
+fn run_asar(prog_dir: PathBuf, dir: PathBuf, args: Vec<String>) {
+    let cmd = Command::new("asar.cmd")
+        .env(
+            "PATH",
+            get_asar_dirs().join(";")
+                + ";"
+                + env::var("PATH").unwrap().as_str()
+                + ";"
+                + prog_dir.to_str().unwrap(),
+        )
         .current_dir(dir)
         .args(args)
         .spawn();
@@ -211,24 +246,15 @@ fn main() -> std::io::Result<()> {
     let resource_dir = wemod_version_folder.join("resources");
 
     let asar_bin = if opts.contains_key("asar-bin") {
-        let file = PathBuf::from(opts.get("asar-bin").unwrap());
+        let folder = PathBuf::from(opts.get("asar-bin").unwrap());
 
-        if !file.exists() {
-            err("asar binary specified does not exist.".to_string());
+        if !folder.exists() {
+            err("asar path specified does not exist.".to_string());
         }
 
-        file
+        folder
     } else {
-        let asar = known_folder_path(FolderId::ProgramFiles)
-            .unwrap()
-            .join("nodejs")
-            .join("asar.cmd");
-
-        if !asar.exists() || !asar.is_file() {
-            err("asar not found. you can manually specify it with --asar-bin".to_string())
-        }
-
-        asar
+        PathBuf::from(".")
     };
 
     println!(
