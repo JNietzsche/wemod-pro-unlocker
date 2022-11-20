@@ -11,6 +11,9 @@
 
 ### ⚠️ DISCLAIMER: Eventhough I don't think it is likely, WeMod could in theory ban you for this. I take no responsibilty for any damage caused by the usage of this program.
 
+### ℹ️ INFORMATION: With the latest update, WeMod semi-broke this patcher
+You still have stuff like themes or the in-game overlay but you won't be able to click-to-toggle your cheats anymore. I'm currently investigating why it isn't working and until then you can downgrade WeMod to a version like v8.3.x.
+
 <br/>
 
 ## ⬇️ Installation
