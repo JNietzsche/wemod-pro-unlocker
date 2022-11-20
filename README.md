@@ -11,11 +11,6 @@
 
 ### ⚠️ DISCLAIMER: Eventhough I don't think it is likely, WeMod could in theory ban you for this. I take no responsibilty for any damage caused by the usage of this program.
 
-### ℹ️ INFORMATION: With the latest update, WeMod semi-broke this patcher
-You still have stuff like themes or the in-game overlay but you won't be able to click-to-toggle your cheats anymore. I've already figured out how to bypass this change but I'm still figuring out how to build it into the patcher.
-
-#### The workaround is to start "wemod-pro-unlocker" and WeMod.exe with "-dev", open the game page, press F12, goto console and pasting ```document.querySelectorAll('.cheats-wrapper button.pro-upgrade').forEach(element => element.remove());```.
-
 <br/>
 
 ## ⬇️ Installation
@@ -31,7 +26,7 @@ wemod-pro-unlocker
 
 <br/>
 
-## ✅❎ What does not work?
+## ❌ What does not work?
 - Saving Mods (this was available until WeMod v8.3.8, which you can download from [here](https://storage-cdn.wemod.com/app/releases/stable/WeMod-8.3.8.exe))
 - RC From Phone (this feature is not client-side so you actually need pro; there's nothing I can do)
 
