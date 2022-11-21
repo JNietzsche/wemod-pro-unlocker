@@ -48,5 +48,3 @@ This program may sound like malware at first, but if you're unsure, just read th
 
 ## ❓ It stopped working after the latest update, what should I do?
 This is probably because WeMod updated itself and now uses a new directory. To fix this, just run the program again.
-
-##### Hint: You can create a shortcut which always launches both the unlocker and WeMod to automatically patch WeMod after updates.
