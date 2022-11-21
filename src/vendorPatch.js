@@ -1,1 +1,2 @@
-/* This comment is here for more compatibility */;setInterval(() => document.querySelectorAll('.cheats-wrapper button.pro-upgrade').forEach(element => element.remove()), 5000);/* */
+
+;setInterval(() => document.querySelectorAll('.cheats-wrapper button.pro-upgrade').forEach(element => element.remove()), 5000);
