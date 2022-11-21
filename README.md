@@ -27,7 +27,7 @@ wemod-pro-unlocker
 <br/>
 
 ## ❌ What does not work?
-- Saving Mods (this was available until WeMod v8.3.8, which you can download from [here](https://storage-cdn.wemod.com/app/releases/stable/WeMod-8.3.8.exe))
+- Saving Mods (this was available until WeMod v8.3.9 broke it, so you can download v8.3.8 from [here](https://storage-cdn.wemod.com/app/releases/stable/WeMod-8.3.8.exe))
 - RC From Phone (this feature is not client-side so you actually need pro; there's nothing I can do)
 
 <br/>
@@ -43,7 +43,7 @@ wemod-pro-unlocker
 <br/>
 
 ## 🔒 Is it safe?
-This program may sound like maleware at first, but if you're unsure, just read the source code. It's quite small and (hopefully, I'm relatively new to Rust) readable.
+This program may sound like malware at first, but if you're unsure, just read the source code. It's quite small and (hopefully, I'm relatively new to Rust) readable.
 
 <br/>
 
