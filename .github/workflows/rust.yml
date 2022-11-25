@@ -17,7 +17,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Install binutils
-      run: sudo apt install binutils-mingw-w64
+      run: sudo apt install x86_64-w64-mingw32-gcc
     - name: Install toolchain
       run: |
         rustup install stable-x86_64-pc-windows-gnu
