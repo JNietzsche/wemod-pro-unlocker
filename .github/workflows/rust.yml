@@ -17,7 +17,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Install toolchain
-      run: rustup install x86_64-pc-windows-msvc
+      run: rustup install stable-x86_64-pc-windows-msvc
     - name: Build
       run: cargo build --target=x86_64-pc-windows-msvc --verbose --release
     - name: Upload Artifacts
