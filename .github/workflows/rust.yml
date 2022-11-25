@@ -16,5 +16,12 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+    - name: Install toolchain
+      run: rustup install x64_64-px-windows-msvc
     - name: Build
-      run: cargo build --target=x86_64-pc-windows-msvc --verbose
+      run: cargo build --target=x86_64-pc-windows-msvc --verbose --release
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: windows-build
+        path: target\release\wemod-pro-unlocker.exe
