@@ -15,19 +15,18 @@
 
 ## ⬇️ Installation
 #### Note: after following any of the steps below, you must restart WeMod (make sure to also close it from the tray)
-For installation, you have three options.
+For installation, you have two options.
 1. Install Cargo, then run
 ```
 cargo install wemod-pro-unlocker
 wemod-pro-unlocker
 ```
-2. (Not recommended) Download a build from the releases tab <br/>
-3. (Not recommended) Manually build it from source
+2. (not recommended) Manually build it from source
 
 <br/>
 
 ## ❌ What does not work?
-- Saving Mods (this was available until WeMod v8.3.8, which you can download from [here](https://storage-cdn.wemod.com/app/releases/stable/WeMod-8.3.8.exe))
+- Saving Mods (this was available until WeMod v8.3.9 broke it, so you can download v8.3.8 from [here](https://storage-cdn.wemod.com/app/releases/stable/WeMod-8.3.8.exe))
 - RC From Phone (this feature is not client-side so you actually need pro; there's nothing I can do)
 
 <br/>
@@ -35,19 +34,17 @@ wemod-pro-unlocker
 ## ⚙️ Configuration
 | Argument                  	| Description                                                                                                 	| Example
 |---------------------------	|-------------------------------------------------------------------------------------------------------------	|----------------------------------
-| --wemod-dir <dir>         	| Path to your WeMod dir. By default, this is "%localappdata%/WeMod".                                         	| C:\WeMod
-| --wemod-version <version> 	| The version to patch. By default, this will be the latest version installed. 	                                | 8.3.6
-| --asar-bin <bin>          	| Path to the asar bin. By default, this will be "Program Files/nodejs/asar.cmd".                             	| C:\asar\asar.cmd
-| --account <json>            | Overwrites the account data. You can find all available options by searching for /v3/account in the dev tools | username:'myaccount',email:'test'
+| --wemod-dir <dir>         	 	 	 	 	 	 	| Path to your WeMod dir. By default, this is "%localappdata%/WeMod".                                         	| C:\WeMod
+| --wemod-version <version> 	 	 	 	 	 	 	| The version to patch. By default, this will be the latest version installed. 	                                | 8.3.6
+| --asar-bin <folder containing asar.cmd> | Path to a folder containing "asar.cmd".                                                                     	| C:\asar
+| --account <json>            	 	 	 	 	  | Overwrites the account data. You can find all available options by searching for /v3/account in the dev tools | username:'myaccount',email:'test'
 
 <br/>
 
 ## 🔒 Is it safe?
-This program may sound like maleware at first, but if you're unsure, just read the source code. It's quite small and (hopefully, I'm relatively new to Rust) readable.
+This program may sound like malware at first, but if you're unsure, just read the source code. It's quite small and (hopefully, I'm relatively new to Rust) readable.
 
 <br/>
 
 ## ❓ It stopped working after the latest update, what should I do?
 This is probably because WeMod updated itself and now uses a new directory. To fix this, just run the program again.
-
-##### Hint: You can create a shortcut which always launches both the unlocker and WeMod to automatically patch WeMod after updates.
