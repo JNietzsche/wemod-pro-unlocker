@@ -12,6 +12,8 @@ use std::{
 use version_compare::{compare as compare_versions, Cmp};
 use windirs::{known_folder_path, FolderId};
 
+const VERSION: &str = env!("CARGO_PKG_VERSION");
+
 fn get_wemod_folder() -> PathBuf {
     let local_app_data =
         known_folder_path(FolderId::LocalAppData).expect("Local app data could not be found.");
@@ -170,7 +172,9 @@ fn patch(extracted_resource_dir: PathBuf, opts: HashMap<String, String>) -> std:
 
     let mut vendor_bundle_contents =
         fs::read_to_string(&vendor_bundle).expect("failed to read vendor bundle");
-    let vendor_bundle_patch = include_str!("vendorPatch.js").to_string();
+    let vendor_bundle_patch = include_str!("vendorPatch.js")
+        .to_string()
+        .replace("/*{%version%}*/", VERSION);
 
     vendor_bundle_contents.insert_str(0, &vendor_bundle_patch);
 
