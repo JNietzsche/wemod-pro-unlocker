@@ -26,7 +26,6 @@ wemod-pro-unlocker
 <br/>
 
 ## ❌ What does not work?
-- Saving Mods (this was available until WeMod v8.3.9 broke it, so you can download v8.3.8 from [here](https://storage-cdn.wemod.com/app/releases/stable/WeMod-8.3.8.exe))
 - RC From Phone (this feature is not client-side so you actually need pro; there's nothing I can do)
 
 <br/>
