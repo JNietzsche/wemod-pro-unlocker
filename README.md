@@ -47,3 +47,10 @@ This program may sound like malware at first, but if you're unsure, just read th
 
 ## ❓ It stopped working after the latest update, what should I do?
 This is probably because WeMod updated itself and now uses a new directory. To fix this, just run the program again.
+
+<br/>
+
+## 🫂 Contributors
+<a href="https://github.com/bennett-sh/wemod-pro-unlocker/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=bennett-sh/wemod-pro-unlocker" />
+</a>
