@@ -1,2 +1,5 @@
-/target # Cargo build directory
-apply.cmd # I use this script to run the patcher with my preffered settings
+# Cargo build directory
+/target
+
+# I use this script to run the patcher with my preffered settings
+apply.cmd
