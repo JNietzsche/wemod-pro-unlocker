@@ -26,6 +26,11 @@ wemod-pro-unlocker
 
 <br/>
 
+## ➕ Requirements
+- [asar](https://github.com/electron/asar)
+
+<br/>
+
 ## ❌ What does not work?
 - RC From Phone (this feature is not client-side so you actually need pro; there's nothing I can do)
 
