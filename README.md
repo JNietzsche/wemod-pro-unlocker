@@ -15,13 +15,19 @@
 
 ## ⬇️ Installation
 #### Note: after following any of the steps below, you must restart WeMod (make sure to also close it from the tray)
-For installation, you have two options.
-1. Install Cargo, then run
+For installation, you have three options.
+1. Download the pre-built executable [here](https://github.com/bennett-sh/wemod-pro-unlocker/releases/latest/download/wemod-pro-unlocker.exe)
+2. Install Cargo, then run
 ```
 cargo install wemod-pro-unlocker
 wemod-pro-unlocker
 ```
-2. (not recommended) Manually build it from source
+3. (not recommended) Manually build it from source
+
+<br/>
+
+## ➕ Requirements
+- [asar](https://github.com/electron/asar)
 
 <br/>
 
@@ -47,3 +53,10 @@ This program may sound like malware at first, but if you're unsure, just read th
 
 ## ❓ It stopped working after the latest update, what should I do?
 This is probably because WeMod updated itself and now uses a new directory. To fix this, just run the program again.
+
+<br/>
+
+## 🫂 Contributors
+<a href="https://github.com/bennett-sh/wemod-pro-unlocker/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=bennett-sh/wemod-pro-unlocker" />
+</a>
