@@ -22,7 +22,7 @@ For installation, you have three options.
 cargo install wemod-pro-unlocker
 wemod-pro-unlocker
 ```
-2. (not recommended) Manually build it from source
+3. (not recommended) Manually build it from source
 
 <br/>
 
