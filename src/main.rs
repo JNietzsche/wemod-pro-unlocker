@@ -211,7 +211,12 @@ fn main() -> std::io::Result<()> {
         err(format!("Your OS ({}) is not supported.", env::consts::OS))
     }
 
-    let (_cmds, _flags, opts) = SimpleArgs::new(env::args().collect()).parse();
+    let (_cmds, flags, opts) = SimpleArgs::new(env::args().collect()).parse();
+
+    if flags.contains(&"v".to_string()) {
+        println!("{}", VERSION);
+        exit(0);
+    }
 
     let wemod_folder = if opts.contains_key("wemod-dir") {
         PathBuf::from(opts.get("wemod-dir").unwrap())
