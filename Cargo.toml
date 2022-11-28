@@ -4,7 +4,7 @@ description = "This program patches the WeMod app to think you're a pro subscrib
 license = "MIT"
 homepage = "https://github.com/bennett-sh/wemod-pro-unlocker"
 repository = "https://github.com/bennett-sh/wemod-pro-unlocker"
-version = "0.6.3"
+version = "0.6.4"
 edition = "2021"
 
 [dependencies]

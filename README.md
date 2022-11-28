@@ -37,12 +37,13 @@ wemod-pro-unlocker
 <br/>
 
 ## ⚙️ Configuration
-| Argument                  	| Description                                                                                                 	| Example
-|---------------------------	|-------------------------------------------------------------------------------------------------------------	|----------------------------------
+| Argument                  	| Description                                                                                                             	| Example
+|---------------------------	|-------------------------------------------------------------------------------------------------------------------------	|----------------------------------
 | --wemod-dir <dir>         	 	 	 	 	 	 	| Path to your WeMod dir. By default, this is "%localappdata%/WeMod".                                         	| C:\WeMod
 | --wemod-version <version> 	 	 	 	 	 	 	| The version to patch. By default, this will be the latest version installed. 	                                | 8.3.6
 | --asar-bin <folder containing asar.cmd> | Path to a folder containing "asar.cmd".                                                                     	| C:\asar
 | --account <json>            	 	 	 	 	  | Overwrites the account data. You can find all available options by searching for /v3/account in the dev tools | username:'myaccount',email:'test'
+| -v                          	 	 	 	 	  | Prints out the version info. Will cancel everything else                                                      | ---
 
 <br/>
 
