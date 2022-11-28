@@ -74,8 +74,8 @@ fn sort_app_versions(a: &DirEntry, b: &DirEntry) -> Ordering {
     };
 }
 
-fn run_asar(prog_dir: PathBuf, dir: PathBuf, args: Vec<String>) {
-    let cmd = Command::new("asar.cmd")
+fn run_asar(prog_dir: PathBuf, dir: PathBuf, args: Vec<String>, opts: &HashMap<String, String>) {
+    let cmd = Command::new(opts.get("asar-bin").unwrap_or(&"asar.cmd".to_string()))
         .env(
             "PATH",
             get_asar_dirs().join(";")
@@ -125,7 +125,7 @@ fn get_latest_app_dir(wemod_dir: PathBuf) -> std::io::Result<PathBuf> {
         .path())
 }
 
-fn patch(extracted_resource_dir: PathBuf, opts: HashMap<String, String>) -> std::io::Result<()> {
+fn patch(extracted_resource_dir: PathBuf, opts: &HashMap<String, String>) -> std::io::Result<()> {
     let app_bundle = extracted_resource_dir.join("output").join("app-bundle.js");
 
     if !app_bundle.exists() || !app_bundle.is_file() {
@@ -254,8 +254,8 @@ fn main() -> std::io::Result<()> {
 
     let resource_dir = wemod_version_folder.join("resources");
 
-    let asar_bin = if opts.contains_key("asar-bin") {
-        let folder = PathBuf::from(opts.get("asar-bin").unwrap());
+    let asar_folder = if opts.contains_key("asar") {
+        let folder = PathBuf::from(opts.get("asar").unwrap());
 
         if !folder.exists() {
             err("asar path specified does not exist.".to_string());
@@ -286,31 +286,33 @@ fn main() -> std::io::Result<()> {
     }
 
     run_asar(
-        asar_bin.clone(),
+        asar_folder.clone(),
         resource_dir.clone(),
         vec![
             "extract".to_string(),
             "app.asar".to_string(),
             "app".to_string(),
         ],
+        &opts,
     );
 
     println!("Done.");
 
     let extracted_resource_dir = resource_dir.join("app");
 
-    patch(extracted_resource_dir.clone(), opts)?;
+    patch(extracted_resource_dir.clone(), &opts)?;
 
     println!("Repacking resources...");
 
     run_asar(
-        asar_bin.clone(),
+        asar_folder.clone(),
         resource_dir,
         vec![
             "pack".to_string(),
             "app".to_string(),
             "app.asar".to_string(),
         ],
+        &opts,
     );
 
     println!("Done.");

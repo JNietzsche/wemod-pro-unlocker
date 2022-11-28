@@ -9,7 +9,7 @@
   <img width="256" src="https://user-images.githubusercontent.com/110846042/199363901-4b212629-895c-47a5-a059-4df198b64565.png" alt="WeMod Logo">
 </div>
 
-### ⚠️ DISCLAIMER: Eventhough I don't think it is likely, WeMod could in theory ban you for this. I take no responsibilty for any damage caused by the usage of this program.
+#### ⚠️ DISCLAIMER: Eventhough I don't think it is likely, WeMod could in theory ban you for this. I take no responsibilty for any damage caused by the usage of this program.
 
 <br/>
 
@@ -37,13 +37,14 @@ wemod-pro-unlocker
 <br/>
 
 ## ⚙️ Configuration
-| Argument                  	| Description                                                                                                             	| Example
-|---------------------------	|-------------------------------------------------------------------------------------------------------------------------	|----------------------------------
-| --wemod-dir <dir>         	 	 	 	 	 	 	| Path to your WeMod dir. By default, this is "%localappdata%/WeMod".                                         	| C:\WeMod
-| --wemod-version <version> 	 	 	 	 	 	 	| The version to patch. By default, this will be the latest version installed. 	                                | 8.3.6
-| --asar-bin <folder containing asar.cmd> | Path to a folder containing "asar.cmd".                                                                     	| C:\asar
-| --account <json>            	 	 	 	 	  | Overwrites the account data. You can find all available options by searching for /v3/account in the dev tools | username:'myaccount',email:'test'
-| -v                          	 	 	 	 	  | Prints out the version info. Will cancel everything else                                                      | ---
+| Argument                  	| Description                                                                                                                           	| Example
+|---------------------------	|---------------------------------------------------------------------------------------------------------------------------------------	|----------------------------------
+| --wemod-dir <dir>         	 	 	 	 	 	 	          	  | Path to your WeMod dir. By default, this is "%localappdata%/WeMod".                                         	| C:\WeMod
+| --wemod-version <version> 	 	 	 	 	 	 	          	  | The version to patch. By default, this will be the latest version installed. 	                                | 8.3.6
+| --asar <folder containing asar.cmd or --asar-bin>     | Path to a folder containing "asar.cmd" or the bin specified with --asar-bin.                                 	| C:\asar
+| --asar-bin <file in --asar>                           | The asar executable in the folder specified in --asar (or in a default npm folder)                           	| asar.cmd
+| --account <json>            	 	 	 	              	  | Overwrites the account data. You can find all available options by searching for /v3/account in the dev tools | username:'myaccount',email:'test'
+| -v                          	 	 	 	 	            	  | Prints out the version info. Will cancel everything else                                                      | ---
 
 <br/>
 
