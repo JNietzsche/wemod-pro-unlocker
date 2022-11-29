@@ -3,10 +3,13 @@
   <h4>This program patches the WeMod app to think you're a pro subscriber.</h4>
   <img src="https://img.shields.io/crates/v/wemod-pro-unlocker?color=purple" alt="Version on Crates.io">
   <img src="https://img.shields.io/crates/d/wemod-pro-unlocker?color=red" alt="Downloads">
+  <img src="https://img.shields.io/github/downloads/bennett-sh/wemod-pro-unlocker/total?label=GitHub%20Downloads" alt="Downloads on GitHub">
   <img src="https://img.shields.io/crates/l/wemod-pro-unlocker?color=green" alt="License">
 
 
   <img src="https://img.shields.io/badge/rust-2021-orange?logo=rust" alt="Rust 2021">
+  <img src="https://img.shields.io/badge/.NET-512BD4?logo=dotnet" alt=".NET">
+  <img src="https://img.shields.io/badge/Windows-10+11-0078D4?logo=windows-11" alt="Windows 10 and 11">
   <img src="https://img.shields.io/github/languages/code-size/bennett-sh/wemod-pro-unlocker?color=yellow" alt="Code Size"><br/><br/>
   <img width="256" src="https://user-images.githubusercontent.com/110846042/204567385-4df3007c-7a63-40fd-9feb-f9f36aa43030.png" alt="WeMod Pro Unlocker Logo">
 </div>
@@ -16,37 +19,14 @@
 <br/>
 
 ## ⬇️ Installation
-#### Note: after following any of the steps below, you must restart WeMod (make sure to also close it from the tray)
-For installation, you have three options.
-1. Download the pre-built executable [here](https://github.com/bennett-sh/wemod-pro-unlocker/releases/latest/download/wemod-pro-unlocker.exe)
-2. Install Cargo, then run
-```
-cargo install wemod-pro-unlocker
-wemod-pro-unlocker
-```
-3. (not recommended) Manually build it from source
-
-<br/>
-
-## ➕ Requirements
-- [asar](https://github.com/electron/asar)
+There are two things you can install:
+- [A GUI desktop application (recommended)](gui/README.md)
+- [A CLI (not recommended)](cli/README.md)
 
 <br/>
 
 ## ❌ What does not work?
 - RC From Phone (this feature is not client-side so you actually need pro; there's nothing I can do)
-
-<br/>
-
-## ⚙️ Configuration
-| Argument                  	| Description                                                                                                                           	| Example
-|---------------------------	|---------------------------------------------------------------------------------------------------------------------------------------	|----------------------------------
-| --wemod-dir <dir>         	 	 	 	 	 	 	          	  | Path to your WeMod dir. By default, this is "%localappdata%/WeMod".                                         	| C:\WeMod
-| --wemod-version <version> 	 	 	 	 	 	 	          	  | The version to patch. By default, this will be the latest version installed. 	                                | 8.3.6
-| --asar <folder containing asar.cmd or --asar-bin>     | Path to a folder containing "asar.cmd" or the bin specified with --asar-bin.                                 	| C:\asar
-| --asar-bin <file in --asar>                           | The asar executable in the folder specified in --asar (or in a default npm folder)                           	| asar.cmd
-| --account <json>            	 	 	 	              	  | Overwrites the account data. You can find all available options by searching for /v3/account in the dev tools | username:'myaccount',email:'test'
-| -v                          	 	 	 	 	            	  | Prints out the version info. Will cancel everything else                                                      | ---
 
 <br/>
 
@@ -57,6 +37,7 @@ This program may sound like malware at first, but if you're unsure, just read th
 
 ## ❓ It stopped working after the latest update, what should I do?
 This is probably because WeMod updated itself and now uses a new directory. To fix this, just run the program again.
+
 
 <br/>
 
