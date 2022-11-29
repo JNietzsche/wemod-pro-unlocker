@@ -5,9 +5,10 @@
   <img src="https://img.shields.io/crates/d/wemod-pro-unlocker?color=red" alt="Downloads">
   <img src="https://img.shields.io/crates/l/wemod-pro-unlocker?color=green" alt="License">
 
+
   <img src="https://img.shields.io/badge/rust-2021-orange?logo=rust" alt="Rust 2021">
   <img src="https://img.shields.io/github/languages/code-size/bennett-sh/wemod-pro-unlocker?color=yellow" alt="Code Size"><br/><br/>
-  <img width="256" src="https://user-images.githubusercontent.com/110846042/204528128-76fc17fa-ea2c-4640-ae65-41cfba66f499.png" alt="WeMod Pro Unlocker Logo">
+  <img width="256" src="https://user-images.githubusercontent.com/110846042/204567385-4df3007c-7a63-40fd-9feb-f9f36aa43030.png" alt="WeMod Pro Unlocker Logo">
 </div>
 
 #### ⚠️ DISCLAIMER: Eventhough I don't think it is likely, WeMod could in theory ban you for this. I take no responsibilty for any damage caused by the usage of this program.
