@@ -20,7 +20,7 @@ This means that you won't need Node.JS or asar on your system.
 <br/>
 
 ## ⬇️ Installation
-1. Download the msix from [here](https://github.com/bennett-sh/wemod-pro-unlocker/releases/latest/download/gui-x64.msix)
+1. Download the msix from [here](https://raw.githubusercontent.com/bennett-sh/wemod-pro-unlocker/master/static/gui-x64.msix)
 2. Run it and click "Install"
 3. Profit.
 
