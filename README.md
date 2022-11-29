@@ -18,7 +18,7 @@
 
 ## ⬇️ Installation
 There are two things you can install:
-- [A GUI desktop application (recommended)](gui/README.md)
+- COMING SOON (currently broken): [A GUI desktop application (recommended)](gui/README.md)
 - [A CLI (not recommended)](cli/README.md)
 
 <br/>
