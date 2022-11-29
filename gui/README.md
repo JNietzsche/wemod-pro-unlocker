@@ -15,12 +15,13 @@
 #### [Back to the main page](../README.md)
 
 #### All requirements needed for the CLI will come packaged with this app.
-This means that you won't need Node.JS, asar or anything else installed on your system.
+This means that you won't need Node.JS or asar on your system.
 
 <br/>
 
 ## ⬇️ Installation
-1. Download the zip from [here](https://github.com/bennett-sh/wemod-pro-unlocker/releases/latest/download/gui.zip)
-2. Extract it and execute ```WMPU-GUI.exe```
+1. Download the msix from [here](https://github.com/bennett-sh/wemod-pro-unlocker/releases/latest/download/gui-x64.msix)
+2. Run it and click "Install"
+3. Profit.
 
 <br/>
