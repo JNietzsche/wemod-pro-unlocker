@@ -4,9 +4,7 @@
   <img src="https://img.shields.io/crates/v/wemod-pro-unlocker?color=purple" alt="Version on Crates.io">
   <img src="https://img.shields.io/crates/d/wemod-pro-unlocker?color=red" alt="Downloads">
   <img src="https://img.shields.io/github/downloads/bennett-sh/wemod-pro-unlocker/total?label=GitHub%20Downloads" alt="Downloads on GitHub">
-  <img src="https://img.shields.io/crates/l/wemod-pro-unlocker?color=green" alt="License">
-
-
+  <img src="https://img.shields.io/crates/l/wemod-pro-unlocker?color=green" alt="License"><br/>
   <img src="https://img.shields.io/badge/rust-2021-orange?logo=rust" alt="Rust 2021">
   <img src="https://img.shields.io/badge/.NET-512BD4?logo=dotnet" alt=".NET">
   <img src="https://img.shields.io/badge/Windows-10+11-0078D4?logo=windows-11" alt="Windows 10 and 11">
