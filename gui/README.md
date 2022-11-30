@@ -21,7 +21,11 @@ This means that you won't need Node.JS or asar on your system.
 
 ## ⬇️ Installation
 1. Download the msix from [here](https://raw.githubusercontent.com/bennett-sh/wemod-pro-unlocker/master/static/gui-x64.msix)
-2. Run it and click "Install"
-3. Profit.
+2. Install the certificates (please contact me if you know how to bypass this)
+- Right click on MSIX file > Properties > Digital Signatures > Select the signature > Details > View Certificate
+- Click Install Certificate
+- Local Machine > Next > Place all certficates in the following store > Trusted Packaged App Installaton Authorities
+3. Run it and click "Install"
+4. Profit.
 
 <br/>
