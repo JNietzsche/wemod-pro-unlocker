@@ -18,8 +18,8 @@
 
 ## ⬇️ Installation
 There's one thing you can install:
-- [A GUI desktop application (recommended)](gui/README.md)
-- [A CLI (not recommended)](cli/README.md)
+- [A GUI desktop application](gui/README.md)
+- [A CLI](cli/README.md)
 
 <br/>
 
