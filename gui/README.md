@@ -19,13 +19,14 @@ This means that you won't need Node.JS or asar on your system.
 
 <br/>
 
+### ⚠️ HELP NEEDED: If you know how to properly sign an MSIX for free, please contact me
+
+<br/>
+
 ## ⬇️ Installation
-1. Download the msix from [here](https://raw.githubusercontent.com/bennett-sh/wemod-pro-unlocker/master/static/gui-x64.msix)
-2. Install the certificates (please contact me if you know how to bypass this)
-- Right click on MSIX file > Properties > Digital Signatures > Select the signature > Details > View Certificate
-- Click Install Certificate
-- Local Machine > Next > Place all certficates in the following store > Trusted Packaged App Installaton Authorities
-3. Run it and click "Install"
-4. Profit.
+1. Install Visual Studio 2022 with ".NET Desktop Developement" and "UWP Developement"
+2. Clone the repository & open the solution (.sln) located in /gui in VS
+3. Choose "WMPU-GUI" in the toolbar next to the green arrow
+4. Click on the second green arrow (it's only partially filled)
 
 <br/>
