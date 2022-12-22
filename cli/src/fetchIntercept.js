@@ -1,7 +1,9 @@
 if(new URL(e.url).pathname.endsWith('/account')) {
   return {
     ...JSON.parse(t),
-    subscription: 'pro',
+    subscription: {
+      type: 'pro'
+    },
     username: '🔓WeMod Pro Unlocker',
     profileImage: 'static/shared/images/default-profile-image.svg',
     ...{
