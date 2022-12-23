@@ -25,8 +25,8 @@ This means that you won't need Node.JS or asar on your system.
 
 ## ⬇️ Installation
 1. Install Visual Studio 2022 with ".NET Desktop Developement" and "UWP Developement"
-2. Clone the repository & open the solution (.sln) located in /gui in VS
-3. Choose "WMPU-GUI" in the toolbar next to the green arrow
-4. Click on the second green arrow (it's only partially filled)
+2. Enable Windows Developer Mode
+3. Clone the repository & open the solution (.sln) located in /gui in VS
+4. Click on the second green arrow in the toolbar (it's only partially filled)
 
 <br/>
