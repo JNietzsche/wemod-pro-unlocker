@@ -1,3 +1,5 @@
+#### ⚠️ This program no longer works with the latest version (8.3.16). To continue using this program wait until it's fixed or downgrade your WeMod version (<=8.3.15).
+
 <div align="center">
   <h1>WeMod Pro Unlocker</h1>
   <h4>This program patches the WeMod app to think you're a pro subscriber.</h4>
@@ -11,8 +13,6 @@
   <img src="https://img.shields.io/github/languages/code-size/bennett-sh/wemod-pro-unlocker?color=yellow" alt="Code Size"><br/><br/>
   <img width="256" src="https://user-images.githubusercontent.com/110846042/204567385-4df3007c-7a63-40fd-9feb-f9f36aa43030.png" alt="WeMod Pro Unlocker Logo">
 </div>
-
-#### ⚠️ DISCLAIMER: Eventhough I don't think it is likely, WeMod could in theory ban you for this. I take no responsibilty for any damage caused by the usage of this program.
 
 <br/>
 
