@@ -1,5 +1,3 @@
-#### ⚠️ This program no longer works with the latest version (8.3.16). To continue using this program wait until it's fixed or downgrade your WeMod version (<=8.3.15).
-
 <div align="center">
   <h1>WeMod Pro Unlocker</h1>
   <h4>This program patches the WeMod app to think you're a pro subscriber.</h4>
