@@ -1,13 +1,17 @@
-if(new URL(e.url).pathname.endsWith('/account')) {
-  return {
-    ...JSON.parse(t),
-    subscription: {
-      type: 'pro'
-    },
-    username: '🔓WeMod Pro Unlocker',
-    profileImage: 'static/shared/images/default-profile-image.svg',
-    ...{
-       /*{%account%}*/
+if ("application/json" === e.headers.get("Content-Type")) {
+  if (new URL(e.url).pathname.endsWith('/account')) {
+    var originalData = await e.json();
+    return {
+      ...originalData,
+      subscription: {
+        type: 'pro'
+      },
+      ...{
+        /*{%account%}*/
+        username: '🔓WeMod Pro Unlocker'
+      }
     }
   }
+  return e.json()
 }
+return e.text()
