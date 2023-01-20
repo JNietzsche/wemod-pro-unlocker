@@ -4,11 +4,12 @@ description = "This program patches the WeMod app to think you're a pro subscrib
 license = "MIT"
 homepage = "https://github.com/bennett-sh/wemod-pro-unlocker"
 repository = "https://github.com/bennett-sh/wemod-pro-unlocker"
-version = "0.10.2"
+version = "0.11.0"
 edition = "2021"
 
 [dependencies]
 colored = "2.0.0"
 windirs = "1.0.1"
+gh-updater = { git = "https://github.com/blu-dev/gh-updater.git" }
 simple--args = "1.1.1"
 version-compare = "0.1.0"
