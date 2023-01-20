@@ -32,7 +32,7 @@ pub fn get_latest_release() -> Option<serde_json::Value> {
 }
 
 pub fn update() {
-    let updater = include_bytes!("../../updater/wemod-pro-unlocker-updater.exe");
+    let updater = include_bytes!("../bin/wemod-pro-unlocker-updater.exe");
     let updater_file = temp_dir().join("wemod-pro-unlocker-updater.exe");
 
     if updater_file.exists() && updater_file.is_file() {
