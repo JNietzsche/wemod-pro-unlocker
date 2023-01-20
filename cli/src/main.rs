@@ -134,8 +134,7 @@ fn patch(extracted_resource_dir: PathBuf, opts: &HashMap<String, String>) -> std
 
     println!("Patching app bundle...");
 
-    let app_bundle_contents =
-        fs::read_to_string(&app_bundle).expect("failed to read app bundle");
+    let app_bundle_contents = fs::read_to_string(&app_bundle).expect("failed to read app bundle");
 
     let app_bundle_patch = include_str!("fetchIntercept.js").to_string().replace(
         "/*{%account%}*/",
@@ -152,10 +151,8 @@ fn patch(extracted_resource_dir: PathBuf, opts: &HashMap<String, String>) -> std
         err("failed to patch app bundle. WeMod may have changed their program".to_string());
     }
 
-    let app_bundle_contents_patched = app_bundle_contents.replace(
-        app_bundle_original_code,
-        app_bundle_patch.as_str(),
-    );
+    let app_bundle_contents_patched =
+        app_bundle_contents.replace(app_bundle_original_code, app_bundle_patch.as_str());
 
     fs::write(&app_bundle, app_bundle_contents_patched)?;
 
@@ -163,8 +160,8 @@ fn patch(extracted_resource_dir: PathBuf, opts: &HashMap<String, String>) -> std
 
     println!("Patching vendor bundle...");
 
-    let vendor_bundle = extracted_resource_dir
-        .join("vendors-efdee510.189b2c6577acf8d05011.bundle.js");
+    let vendor_bundle =
+        extracted_resource_dir.join("vendors-efdee510.189b2c6577acf8d05011.bundle.js");
 
     if !vendor_bundle.exists() || !vendor_bundle.is_file() {
         err("vendor bundle file not found. Please open an issue on the GitHub page.".to_string());
@@ -190,8 +187,8 @@ fn patch(extracted_resource_dir: PathBuf, opts: &HashMap<String, String>) -> std
 
     println!("Patching index.js...");
 
-    let index_js_contents = fs::read_to_string(&index_js)?
-        .replace("d.devMode", "process.argv.includes('-dev')");
+    let index_js_contents =
+        fs::read_to_string(&index_js)?.replace("d.devMode", "process.argv.includes('-dev')");
 
     fs::write(index_js, index_js_contents)?;
 
@@ -209,6 +206,15 @@ fn main() -> std::io::Result<()> {
     if env::consts::OS != "windows" {
         err(format!("Your OS ({}) is not supported.", env::consts::OS))
     }
+
+    let wmpu_version = option_env!("CARGO_PKG_VERSION");
+
+    if wmpu_version.is_some() {
+        println!("WeMod Pro Unlocker v{}", wmpu_version.unwrap());
+    } else {
+        println!("Failed to detect current WeMod Pro Unlocker version.");
+    }
+    println!("If the patcher does not work anymore, please make sure to update it to the latest version.");
 
     let (_cmds, flags, opts) = SimpleArgs::new(env::args().collect()).parse();
 
