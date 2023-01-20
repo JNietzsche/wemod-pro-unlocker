@@ -126,15 +126,15 @@ fn get_latest_app_dir(wemod_dir: PathBuf) -> std::io::Result<PathBuf> {
 }
 
 fn patch(extracted_resource_dir: PathBuf, opts: &HashMap<String, String>) -> std::io::Result<()> {
-    let app_bundle = extracted_resource_dir.join("output").join("app-bundle.js");
+    let app_bundle = extracted_resource_dir.join("app-7f03dae8.0266ddee956f68955ef4.bundle.js");
 
     if !app_bundle.exists() || !app_bundle.is_file() {
-        err("app-bundle.js not found. Please open an issue on the GitHub page.".to_string());
+        err("app bundle file not found. Please open an issue on the GitHub page.".to_string());
     }
 
     println!("Patching app bundle...");
 
-    let mut app_bundle_contents =
+    let app_bundle_contents =
         fs::read_to_string(&app_bundle).expect("failed to read app bundle");
 
     let app_bundle_patch = include_str!("fetchIntercept.js").to_string().replace(
@@ -145,29 +145,29 @@ fn patch(extracted_resource_dir: PathBuf, opts: &HashMap<String, String>) -> std
             ""
         },
     );
-    let insert_app_bundle_patch_at =
-        "if(e.headers.get(\"Content-Type\")===\"application/json\"){try{";
+    let app_bundle_original_code =
+        "return\"application/json\"===e.headers.get(\"Content-Type\")?await e.json():await e.text()";
 
-    app_bundle_contents.insert_str(
-        app_bundle_contents
-            .find(insert_app_bundle_patch_at)
-            .expect("failed to patch app bundle. WeMod may have changed their program")
-            + insert_app_bundle_patch_at.len(),
+    if !app_bundle_contents.contains(app_bundle_original_code) {
+        err("failed to patch app bundle. WeMod may have changed their program".to_string());
+    }
+
+    let app_bundle_contents_patched = app_bundle_contents.replace(
+        app_bundle_original_code,
         app_bundle_patch.as_str(),
     );
 
-    fs::write(&app_bundle, app_bundle_contents)?;
+    fs::write(&app_bundle, app_bundle_contents_patched)?;
 
     println!("Done.");
 
     println!("Patching vendor bundle...");
 
     let vendor_bundle = extracted_resource_dir
-        .join("output")
-        .join("vendor-bundle.js");
+        .join("vendors-efdee510.189b2c6577acf8d05011.bundle.js");
 
     if !vendor_bundle.exists() || !vendor_bundle.is_file() {
-        err("vendor-bundle.js not found. Please open an issue on the GitHub page.".to_string());
+        err("vendor bundle file not found. Please open an issue on the GitHub page.".to_string());
     }
 
     let mut vendor_bundle_contents =
@@ -191,8 +191,7 @@ fn patch(extracted_resource_dir: PathBuf, opts: &HashMap<String, String>) -> std
     println!("Patching index.js...");
 
     let index_js_contents = fs::read_to_string(&index_js)?
-        .replace("g.devMode", "process.argv.includes('-dev')")
-        .replace("_.devMode", "process.argv.includes('-dev')");
+        .replace("d.devMode", "process.argv.includes('-dev')");
 
     fs::write(index_js, index_js_contents)?;
 
