@@ -22,7 +22,7 @@ There's one thing you can install:
 <br/>
 
 ## ❌ What does not work?
-- RC From Phone (this feature is not client-side so you actually need pro; there's nothing I can do)
+- RC from phone (this feature is not client-side so you actually need pro; there's nothing I can do)
 
 <br/>
 
