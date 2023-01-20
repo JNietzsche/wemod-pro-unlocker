@@ -307,13 +307,7 @@ fn main() -> std::io::Result<()> {
         err(format!("Your OS ({}) is not supported.", env::consts::OS))
     }
 
-    let wmpu_version = option_env!("CARGO_PKG_VERSION");
-
-    if wmpu_version.is_some() {
-        println!("WeMod Pro Unlocker v{}", wmpu_version.unwrap());
-    } else {
-        println!("Failed to detect current WeMod Pro Unlocker version.");
-    }
+    println!("WeMod Pro Unlocker v{}", VERSION);
     println!("If the patcher does not work anymore, please make sure to update it to the latest version.");
 
     let (_cmds, flags, opts) = SimpleArgs::new(env::args().collect()).parse();
