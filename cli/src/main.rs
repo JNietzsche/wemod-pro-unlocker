@@ -102,6 +102,54 @@ fn run_asar(prog_dir: PathBuf, dir: PathBuf, args: Vec<String>, opts: &HashMap<S
     }
 }
 
+fn find_app_bundle_file(extracted_resource_dir: PathBuf) -> Option<PathBuf> {
+    let ls_result = fs::read_dir(extracted_resource_dir);
+
+    if ls_result.is_err() {
+        err(format!(
+            "failed to find app bundle file: {}",
+            ls_result.unwrap_err()
+        ));
+        return None;
+    }
+
+    for file_result in ls_result.unwrap() {
+        if file_result.is_err() {
+            println!(
+                "error while finding app bundle file: {}",
+                file_result.unwrap_err()
+            );
+            continue;
+        }
+        let file = file_result.unwrap();
+        let file_name_os = &file.file_name();
+        let file_name = file_name_os.to_str().unwrap();
+
+        if !(file_name.starts_with("app-") && file_name.ends_with(".js")) {
+            continue;
+        }
+
+        let contents_result = fs::read_to_string(&file.path());
+
+        if contents_result.is_err() {
+            println!(
+                "error while reading possible app bundle file: {}",
+                contents_result.unwrap_err()
+            );
+            continue;
+        }
+
+        if contents_result
+            .unwrap()
+            .contains(r#""application/json"===e.headers.get("Content-Type")"#)
+        {
+            return Some(file.path());
+        }
+    }
+
+    None
+}
+
 fn get_latest_app_dir(wemod_dir: PathBuf) -> std::io::Result<PathBuf> {
     let mut versions = fs::read_dir(wemod_dir)?
         .map(|result| result.expect("failed to get wemod folder content"))
@@ -126,7 +174,14 @@ fn get_latest_app_dir(wemod_dir: PathBuf) -> std::io::Result<PathBuf> {
 }
 
 fn patch(extracted_resource_dir: PathBuf, opts: &HashMap<String, String>) -> std::io::Result<()> {
-    let app_bundle = extracted_resource_dir.join("app-7f03dae8.0266ddee956f68955ef4.bundle.js");
+    // let app_bundle = extracted_resource_dir.join("app-7f03dae8.0266ddee956f68955ef4.bundle.js");
+    let app_bundle_option = find_app_bundle_file(extracted_resource_dir.clone());
+
+    if app_bundle_option.is_none() {
+        err("no app bundle file found.".to_string());
+    }
+
+    let app_bundle = PathBuf::from(app_bundle_option.unwrap());
 
     if !app_bundle.exists() || !app_bundle.is_file() {
         err("app bundle file not found. Please open an issue on the GitHub page.".to_string());
