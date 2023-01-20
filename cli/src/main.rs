@@ -13,7 +13,8 @@ use version_compare::{compare as compare_versions, Cmp};
 use windirs::{known_folder_path, FolderId};
 
 const VERSION: &str = env!("CARGO_PKG_VERSION");
-const IS_BETA_CHANNEL: bool = false;
+
+mod updates;
 
 fn get_wemod_folder() -> PathBuf {
     let local_app_data =
@@ -308,27 +309,23 @@ fn main() -> std::io::Result<()> {
         err(format!("Your OS ({}) is not supported.", env::consts::OS))
     }
 
-    let latest_release_result = gh_updater::ReleaseFinderConfig::new("wmpu-cli")
-        .with_repository("wemod-pro-unlocker")
-        .with_author("bennett-sh")
-        .find_release();
+    let latest_release = updates::get_latest_release();
 
-    if latest_release_result.is_err() {
-        println!("failed to check for updates");
-    } else {
-        let latest_release = latest_release_result.unwrap();
-        let latest_in_current_channel_result = match IS_BETA_CHANNEL {
-            true => &latest_release.1,
-            false => &latest_release.0,
-        };
+    if latest_release.is_some() {
+        let release = latest_release.unwrap();
+        let tag_name = release["tag_name"].as_str();
 
-        if latest_in_current_channel_result.is_some() {
-            let latest_in_current_channel = latest_in_current_channel_result.as_ref().unwrap();
-            let tag_name = latest_in_current_channel.get_release_tag();
-
-            if compare_versions(tag_name.replace("v", ""), VERSION).unwrap_or(Cmp::Eq) == Cmp::Gt {
-                println!("{}\n{}", "UPDATE AVAILABLE: There is a new update available, which you are advised to install to ensure compatibility with further WeMod updates.".on_bright_blue().white().bold(), "You can download it via cargo or from the GitHub page.".white())
+        if tag_name.is_some() {
+            match version_compare::compare(tag_name.unwrap().replace("v", ""), VERSION) {
+                Ok(result) => {
+                    if result == Cmp::Gt {
+                        println!("{}\n{}", "UPDATE AVAILABLE: There is a new update available, which you are advised to install to ensure compatibility with further WeMod updates.".on_bright_blue().white().bold(), "You can download it via cargo or from the GitHub page.".white());
+                    }
+                }
+                Err(err) => println!("failed to check for updates: {:?}", err),
             }
+        } else {
+            println!("failed to check for updates: error while parsing json");
         }
     }
 
