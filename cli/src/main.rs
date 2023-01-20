@@ -319,7 +319,9 @@ fn main() -> std::io::Result<()> {
             match version_compare::compare(tag_name.unwrap().replace("v", ""), VERSION) {
                 Ok(result) => {
                     if result == Cmp::Gt {
-                        println!("{}\n{}", "UPDATE AVAILABLE: There is a new update available, which you are advised to install to ensure compatibility with further WeMod updates.".on_bright_blue().white().bold(), "You can download it via cargo or from the GitHub page.".white());
+                        println!("{}", "UPDATE AVAILABLE: There is a new update available.".on_bright_blue().white().bold());
+                        updates::update();
+                        exit(0);
                     }
                 }
                 Err(err) => println!("failed to check for updates: {:?}", err),
@@ -330,7 +332,6 @@ fn main() -> std::io::Result<()> {
     }
 
     println!("WeMod Pro Unlocker v{}", VERSION);
-    println!("If the patcher does not work anymore, please make sure to update it to the latest version.");
 
     let (_cmds, flags, opts) = SimpleArgs::new(env::args().collect()).parse();
 
