@@ -1,309 +1,31 @@
 use colored::Colorize;
 use simpleargs::SimpleArgs;
-use std::{
-    cmp::Ordering,
-    collections::HashMap,
-    env,
-    fs::{self, DirEntry},
-    io::ErrorKind::NotFound,
-    path::PathBuf,
-    process::{exit, Command},
-};
-use version_compare::{compare as compare_versions, Cmp};
-use windirs::{known_folder_path, FolderId};
+use std::{collections::HashMap, env, fs, path::PathBuf, process::exit};
 
-const VERSION: &str = env!("CARGO_PKG_VERSION");
+pub const VERSION: &str = env!("CARGO_PKG_VERSION");
 
+mod asar;
+mod folders;
+mod patches;
 mod updates;
-
-fn get_wemod_folder() -> PathBuf {
-    let local_app_data =
-        known_folder_path(FolderId::LocalAppData).expect("Local app data could not be found.");
-
-    return local_app_data.join("WeMod");
-}
-
-fn get_version_from_dir_entry(entry: &DirEntry) -> String {
-    return entry.file_name().to_str().unwrap().replacen("app-", "", 1);
-}
-
-fn get_version_from_path(path: PathBuf) -> String {
-    return path
-        .file_name()
-        .unwrap()
-        .to_str()
-        .unwrap()
-        .replacen("app-", "", 1);
-}
-
-fn get_asar_dirs() -> Vec<String> {
-    let mut result = vec![];
-
-    result.push(
-        known_folder_path(FolderId::ProgramFiles)
-            .unwrap()
-            .join("nodejs"),
-    );
-    result.push(
-        known_folder_path(FolderId::ProgramFiles)
-            .unwrap()
-            .join("nodejs")
-            .join("node_modules")
-            .join(".bin"),
-    );
-    result.push(
-        known_folder_path(FolderId::RoamingAppData)
-            .unwrap()
-            .join("npm"),
-    );
-
-    result
-        .iter_mut()
-        .map(|path| path.to_str().unwrap().to_string())
-        .collect::<Vec<String>>()
-}
-
-fn sort_app_versions(a: &DirEntry, b: &DirEntry) -> Ordering {
-    return match compare_versions(
-        get_version_from_dir_entry(a.clone()),
-        get_version_from_dir_entry(b.clone()),
-    )
-    .unwrap_or(Cmp::Eq)
-    {
-        Cmp::Gt => Ordering::Greater,
-        Cmp::Lt => Ordering::Less,
-        _ => Ordering::Equal,
-    };
-}
-
-fn run_asar(prog_dir: PathBuf, dir: PathBuf, args: Vec<String>, opts: &HashMap<String, String>) {
-    let cmd = Command::new(opts.get("asar-bin").unwrap_or(&"asar.cmd".to_string()))
-        .env(
-            "PATH",
-            get_asar_dirs().join(";")
-                + ";"
-                + env::var("PATH").unwrap().as_str()
-                + ";"
-                + prog_dir.to_str().unwrap(),
-        )
-        .current_dir(dir)
-        .args(args)
-        .spawn();
-
-    if cmd.is_err() {
-        if let NotFound = cmd.unwrap_err().kind() {
-            err(
-                "asar is not installed. you can install it using 'npm i -g @electron/asar'"
-                    .to_string(),
-            )
-        } else {
-            err("failed run asar command".to_string())
-        }
-    } else {
-        cmd.unwrap().wait().unwrap();
-    }
-}
-
-fn patch_pro_mode(extracted_resource_dir: PathBuf, opts: &HashMap<String, String>) {
-    for app_bundle in get_all_app_bundles(extracted_resource_dir) {
-        let contents_result = fs::read_to_string(&app_bundle);
-
-        if contents_result.is_err() {
-            println!(
-                "error while reading possible app bundle file: {}",
-                contents_result.unwrap_err()
-            );
-            continue;
-        }
-
-        let contents = contents_result.unwrap();
-
-        if contents.contains(r#""application/json"===e.headers.get("Content-Type")"#) {
-            let app_bundle_patch = include_str!("fetchIntercept.js").to_string().replace(
-                "/*{%account%}*/",
-                if opts.contains_key("account") {
-                    opts.get("account").unwrap()
-                } else {
-                    ""
-                },
-            );
-            let app_bundle_original_code =
-                "return\"application/json\"===e.headers.get(\"Content-Type\")?await e.json():await e.text()";
-
-            if !contents.contains(app_bundle_original_code) {
-                err("failed to enable pro mode. WeMod may have updated their program".to_string());
-            }
-
-            let app_bundle_contents_patched =
-                contents.replace(app_bundle_original_code, app_bundle_patch.as_str());
-
-            match fs::write(&app_bundle, app_bundle_contents_patched) {
-                Ok(_) => break,
-                Err(err) => println!("failed to enable pro mode (write): {}", err),
-            };
-        }
-    }
-}
-
-fn get_all_app_bundles(extracted_resource_dir: PathBuf) -> Vec<PathBuf> {
-    let mut app_bundles = vec![];
-    let ls_result = fs::read_dir(extracted_resource_dir);
-
-    if ls_result.is_err() {
-        err(format!(
-            "failed to find app bundle file: {}",
-            ls_result.unwrap_err()
-        ));
-        return app_bundles;
-    }
-
-    for file_result in ls_result.unwrap() {
-        if file_result.is_err() {
-            println!(
-                "error while finding app bundle file: {}",
-                file_result.unwrap_err()
-            );
-            continue;
-        }
-        let file = file_result.unwrap();
-        let file_name_os = &file.file_name();
-        let file_name = file_name_os.to_str().unwrap();
-
-        if !(file_name.starts_with("app-") && file_name.ends_with(".js")) {
-            continue;
-        }
-
-        app_bundles.push(file.path());
-    }
-
-    app_bundles
-}
-
-fn patch_creator_mode(extracted_resource_dir: PathBuf) {
-    for app_bundle in get_all_app_bundles(extracted_resource_dir) {
-        let contents_result = fs::read_to_string(&app_bundle);
-
-        if contents_result.is_err() {
-            println!(
-                "error while reading possible app bundle file: {}",
-                contents_result.unwrap_err()
-            );
-            continue;
-        }
-
-        let contents = contents_result.unwrap();
-
-        if contents.contains("get isCreator(){") {
-            println!("creator");
-            match fs::write(
-                &app_bundle,
-                contents.replace("get isCreator(){", "get isCreator(){return true;"),
-            ) {
-                Ok(_) => {}
-                Err(err) => println!("failed to patch creator mode: {}", err),
-            };
-        }
-    }
-}
-
-fn patch_vendor_bundle(extracted_resource_dir: PathBuf) {
-    let ls_result = fs::read_dir(extracted_resource_dir);
-
-    if ls_result.is_err() {
-        err(format!(
-            "failed to find vendor bundle file: {}",
-            ls_result.unwrap_err()
-        ));
-        return;
-    }
-
-    for file_result in ls_result.unwrap() {
-        if file_result.is_err() {
-            println!(
-                "error while finding vendor bundle file: {}",
-                file_result.unwrap_err()
-            );
-            continue;
-        }
-        let file = file_result.unwrap();
-        let file_name_os = &file.file_name();
-        let file_name = file_name_os.to_str().unwrap();
-
-        if !(file_name.starts_with("vendors-") && file_name.ends_with(".js")) {
-            continue;
-        }
-
-        let contents_result = fs::read_to_string(&file.path());
-
-        if contents_result.is_err() {
-            println!(
-                "error while reading possible vendor bundle file: {}",
-                contents_result.unwrap_err()
-            );
-            continue;
-        }
-
-        let mut contents = contents_result.unwrap();
-
-        let vendor_bundle_patch = include_str!("vendorPatch.js")
-            .to_string()
-            .replace("/*{%version%}*/", VERSION);
-
-        contents.insert_str(0, &vendor_bundle_patch);
-
-        let write_result = fs::write(file.path(), contents);
-
-        if write_result.is_err() {
-            println!(
-                "error while writing vendor bundle file: {}",
-                write_result.unwrap_err()
-            );
-            continue;
-        }
-
-        break;
-    }
-}
-
-fn get_latest_app_dir(wemod_dir: PathBuf) -> std::io::Result<PathBuf> {
-    let mut versions = fs::read_dir(wemod_dir)?
-        .map(|result| result.expect("failed to get wemod folder content"))
-        .filter(|entry| {
-            entry.metadata().expect("failed to get metadata").is_dir()
-                && entry
-                    .file_name()
-                    .to_str()
-                    .expect("failed to get folder name")
-                    .starts_with("app-")
-        })
-        .collect::<Vec<DirEntry>>();
-
-    versions.sort_by(|a, b| sort_app_versions(a, b));
-
-    Ok(versions
-        .last()
-        .expect(
-            "failed to find latest WeMod version. you can manually specify it with --wemod-version",
-        )
-        .path())
-}
+mod versions;
 
 fn patch(extracted_resource_dir: PathBuf, opts: &HashMap<String, String>) -> std::io::Result<()> {
     println!("Enabling pro...");
 
-    patch_pro_mode(extracted_resource_dir.clone(), &opts);
+    patches::patch_pro_mode(extracted_resource_dir.clone(), &opts);
 
     println!("Done.");
 
     println!("Enabling creator mode...");
 
-    patch_creator_mode(extracted_resource_dir.clone());
+    patches::patch_creator_mode(extracted_resource_dir.clone());
 
     println!("Done.");
 
     println!("Patching vendor bundle...");
 
-    patch_vendor_bundle(extracted_resource_dir.clone());
+    patches::patch_vendor_bundle(extracted_resource_dir.clone());
 
     println!("Done.");
 
@@ -325,7 +47,7 @@ fn patch(extracted_resource_dir: PathBuf, opts: &HashMap<String, String>) -> std
     Ok(())
 }
 
-fn err(msg: String) {
+pub fn err(msg: String) {
     println!("{}", msg.red());
     exit(1);
 }
@@ -337,36 +59,6 @@ fn main() -> std::io::Result<()> {
 
     let (_cmds, flags, opts) = SimpleArgs::new(env::args().collect()).parse();
 
-    if !(flags.contains(&"no-update".to_string()) || flags.contains(&"offline".to_string())) {
-        let latest_release = updates::get_latest_release();
-
-        if latest_release.is_some() {
-            let release = latest_release.unwrap();
-            let tag_name = release["tag_name"].as_str();
-
-            if tag_name.is_some() {
-                match version_compare::compare(tag_name.unwrap().replace("v", ""), VERSION) {
-                    Ok(result) => {
-                        if result == Cmp::Gt {
-                            println!(
-                                "{}",
-                                "UPDATE AVAILABLE: There is a new update available."
-                                    .on_bright_blue()
-                                    .white()
-                                    .bold()
-                            );
-                            updates::update();
-                            exit(0);
-                        }
-                    }
-                    Err(err) => println!("failed to check for updates: {:?}", err),
-                }
-            } else {
-                println!("failed to check for updates: error while parsing json");
-            }
-        }
-    }
-
     if flags.contains(&"v".to_string()) {
         println!("{}", VERSION);
         exit(0);
@@ -374,10 +66,12 @@ fn main() -> std::io::Result<()> {
 
     println!("WeMod Pro Unlocker v{}", VERSION);
 
+    updates::check(&flags);
+
     let wemod_folder = if opts.contains_key("wemod-dir") {
         PathBuf::from(opts.get("wemod-dir").unwrap())
     } else {
-        get_wemod_folder()
+        folders::get_wemod_folder()
     };
 
     if !wemod_folder.exists() {
@@ -403,7 +97,7 @@ fn main() -> std::io::Result<()> {
 
         wemod_folder.join(folder)
     } else {
-        get_latest_app_dir(wemod_folder).expect(
+        folders::get_latest_app_dir(wemod_folder).expect(
             "failed to find latest WeMod version. you can manually specify it with --wemod-version",
         )
     };
@@ -424,7 +118,7 @@ fn main() -> std::io::Result<()> {
 
     println!(
         "Attempting to patch WeMod version {}...",
-        get_version_from_path(wemod_version_folder)
+        versions::get_version_from_path(wemod_version_folder)
     );
 
     println!("Extracting resources...");
@@ -441,7 +135,7 @@ fn main() -> std::io::Result<()> {
         )?;
     }
 
-    run_asar(
+    asar::run(
         asar_folder.clone(),
         resource_dir.clone(),
         vec![
@@ -460,7 +154,7 @@ fn main() -> std::io::Result<()> {
 
     println!("Repacking resources...");
 
-    run_asar(
+    asar::run(
         asar_folder.clone(),
         resource_dir,
         vec![
