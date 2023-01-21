@@ -50,7 +50,7 @@ namespace WMPU_GUI.Utils
         {
             using (var proc = new Process())
             {
-                var args = $"--asar \"{Windows.ApplicationModel.Package.Current.InstalledPath + "/Assets"}\" --asar-bin asar.exe";
+                var args = $"-no-update --asar \"{Windows.ApplicationModel.Package.Current.InstalledPath + "/Assets"}\" --asar-bin asar.exe";
 
                 if(wemodDir != null)
                 {

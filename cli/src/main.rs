@@ -309,36 +309,38 @@ fn main() -> std::io::Result<()> {
         err(format!("Your OS ({}) is not supported.", env::consts::OS))
     }
 
-    let latest_release = updates::get_latest_release();
+    let (_cmds, flags, opts) = SimpleArgs::new(env::args().collect()).parse();
 
-    if latest_release.is_some() {
-        let release = latest_release.unwrap();
-        let tag_name = release["tag_name"].as_str();
+    if !(flags.contains(&"no-update".to_string()) || flags.contains(&"offline".to_string())) {
+        let latest_release = updates::get_latest_release();
 
-        if tag_name.is_some() {
-            match version_compare::compare(tag_name.unwrap().replace("v", ""), VERSION) {
-                Ok(result) => {
-                    if result == Cmp::Gt {
-                        println!("{}", "UPDATE AVAILABLE: There is a new update available.".on_bright_blue().white().bold());
-                        updates::update();
-                        exit(0);
+        if latest_release.is_some() {
+            let release = latest_release.unwrap();
+            let tag_name = release["tag_name"].as_str();
+
+            if tag_name.is_some() {
+                match version_compare::compare(tag_name.unwrap().replace("v", ""), VERSION) {
+                    Ok(result) => {
+                        if result == Cmp::Gt {
+                            println!("{}", "UPDATE AVAILABLE: There is a new update available.".on_bright_blue().white().bold());
+                            updates::update();
+                            exit(0);
+                        }
                     }
+                    Err(err) => println!("failed to check for updates: {:?}", err),
                 }
-                Err(err) => println!("failed to check for updates: {:?}", err),
+            } else {
+                println!("failed to check for updates: error while parsing json");
             }
-        } else {
-            println!("failed to check for updates: error while parsing json");
         }
     }
-
-    println!("WeMod Pro Unlocker v{}", VERSION);
-
-    let (_cmds, flags, opts) = SimpleArgs::new(env::args().collect()).parse();
 
     if flags.contains(&"v".to_string()) {
         println!("{}", VERSION);
         exit(0);
     }
+
+    println!("WeMod Pro Unlocker v{}", VERSION);
 
     let wemod_folder = if opts.contains_key("wemod-dir") {
         PathBuf::from(opts.get("wemod-dir").unwrap())

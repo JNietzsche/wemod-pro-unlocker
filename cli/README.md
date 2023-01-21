@@ -41,6 +41,7 @@ wemod-pro-unlocker
 | --asar <folder containing asar.cmd or --asar-bin>     | Path to a folder containing "asar.cmd" or the bin specified with --asar-bin.                                 	| C:\asar
 | --asar-bin <file in --asar>                           | The asar executable in the folder specified in --asar (or in a default npm folder)                           	| asar.cmd
 | --account <json>            	 	 	 	              	  | Overwrites the account data. You can find all available options by searching for /v3/account in the dev tools | username:'myaccount',email:'test'
+| -no-update | -offline            	 	              	  | Doesn't check for/install updates                                                                             | ---
 | -v                          	 	 	 	 	            	  | Prints out the version info. Will cancel everything else                                                      | ---
 
 <br/>
