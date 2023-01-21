@@ -104,7 +104,49 @@ fn run_asar(prog_dir: PathBuf, dir: PathBuf, args: Vec<String>, opts: &HashMap<S
     }
 }
 
-fn find_app_bundle_file(extracted_resource_dir: PathBuf) -> Option<PathBuf> {
+fn patch_pro_mode(extracted_resource_dir: PathBuf, opts: &HashMap<String, String>) {
+    for app_bundle in get_all_app_bundles(extracted_resource_dir) {
+        let contents_result = fs::read_to_string(&app_bundle);
+
+        if contents_result.is_err() {
+            println!(
+                "error while reading possible app bundle file: {}",
+                contents_result.unwrap_err()
+            );
+            continue;
+        }
+
+        let contents = contents_result.unwrap();
+
+        if contents.contains(r#""application/json"===e.headers.get("Content-Type")"#) {
+            let app_bundle_patch = include_str!("fetchIntercept.js").to_string().replace(
+                "/*{%account%}*/",
+                if opts.contains_key("account") {
+                    opts.get("account").unwrap()
+                } else {
+                    ""
+                },
+            );
+            let app_bundle_original_code =
+                "return\"application/json\"===e.headers.get(\"Content-Type\")?await e.json():await e.text()";
+
+            if !contents.contains(app_bundle_original_code) {
+                err("failed to enable pro mode. WeMod may have updated their program".to_string());
+            }
+
+            let app_bundle_contents_patched =
+                contents.replace(app_bundle_original_code, app_bundle_patch.as_str());
+
+            match fs::write(&app_bundle, app_bundle_contents_patched) {
+                Ok(_) => break,
+                Err(err) => println!("failed to enable pro mode (write): {}", err),
+            };
+        }
+    }
+}
+
+fn get_all_app_bundles(extracted_resource_dir: PathBuf) -> Vec<PathBuf> {
+    let mut app_bundles = vec![];
     let ls_result = fs::read_dir(extracted_resource_dir);
 
     if ls_result.is_err() {
@@ -112,7 +154,7 @@ fn find_app_bundle_file(extracted_resource_dir: PathBuf) -> Option<PathBuf> {
             "failed to find app bundle file: {}",
             ls_result.unwrap_err()
         ));
-        return None;
+        return app_bundles;
     }
 
     for file_result in ls_result.unwrap() {
@@ -131,7 +173,15 @@ fn find_app_bundle_file(extracted_resource_dir: PathBuf) -> Option<PathBuf> {
             continue;
         }
 
-        let contents_result = fs::read_to_string(&file.path());
+        app_bundles.push(file.path());
+    }
+
+    app_bundles
+}
+
+fn patch_creator_mode(extracted_resource_dir: PathBuf) {
+    for app_bundle in get_all_app_bundles(extracted_resource_dir) {
+        let contents_result = fs::read_to_string(&app_bundle);
 
         if contents_result.is_err() {
             println!(
@@ -141,18 +191,22 @@ fn find_app_bundle_file(extracted_resource_dir: PathBuf) -> Option<PathBuf> {
             continue;
         }
 
-        if contents_result
-            .unwrap()
-            .contains(r#""application/json"===e.headers.get("Content-Type")"#)
-        {
-            return Some(file.path());
+        let contents = contents_result.unwrap();
+
+        if contents.contains("get isCreator(){") {
+            println!("creator");
+            match fs::write(
+                &app_bundle,
+                contents.replace("get isCreator(){", "get isCreator(){return true;"),
+            ) {
+                Ok(_) => {}
+                Err(err) => println!("failed to patch creator mode: {}", err),
+            };
         }
     }
-
-    None
 }
 
-fn patch_vendor_bundle(extracted_resource_dir: PathBuf) -> Option<PathBuf> {
+fn patch_vendor_bundle(extracted_resource_dir: PathBuf) {
     let ls_result = fs::read_dir(extracted_resource_dir);
 
     if ls_result.is_err() {
@@ -160,7 +214,7 @@ fn patch_vendor_bundle(extracted_resource_dir: PathBuf) -> Option<PathBuf> {
             "failed to find vendor bundle file: {}",
             ls_result.unwrap_err()
         ));
-        return None;
+        return;
     }
 
     for file_result in ls_result.unwrap() {
@@ -209,8 +263,6 @@ fn patch_vendor_bundle(extracted_resource_dir: PathBuf) -> Option<PathBuf> {
 
         break;
     }
-
-    None
 }
 
 fn get_latest_app_dir(wemod_dir: PathBuf) -> std::io::Result<PathBuf> {
@@ -237,41 +289,15 @@ fn get_latest_app_dir(wemod_dir: PathBuf) -> std::io::Result<PathBuf> {
 }
 
 fn patch(extracted_resource_dir: PathBuf, opts: &HashMap<String, String>) -> std::io::Result<()> {
-    let app_bundle_option = find_app_bundle_file(extracted_resource_dir.clone());
+    println!("Enabling pro...");
 
-    if app_bundle_option.is_none() {
-        err("no app bundle file found.".to_string());
-    }
+    patch_pro_mode(extracted_resource_dir.clone(), &opts);
 
-    let app_bundle = PathBuf::from(app_bundle_option.unwrap());
+    println!("Done.");
 
-    if !app_bundle.exists() || !app_bundle.is_file() {
-        err("app bundle file not found. Please open an issue on the GitHub page.".to_string());
-    }
+    println!("Enabling creator mode...");
 
-    println!("Patching app bundle...");
-
-    let app_bundle_contents = fs::read_to_string(&app_bundle).expect("failed to read app bundle");
-
-    let app_bundle_patch = include_str!("fetchIntercept.js").to_string().replace(
-        "/*{%account%}*/",
-        if opts.contains_key("account") {
-            opts.get("account").unwrap()
-        } else {
-            ""
-        },
-    );
-    let app_bundle_original_code =
-        "return\"application/json\"===e.headers.get(\"Content-Type\")?await e.json():await e.text()";
-
-    if !app_bundle_contents.contains(app_bundle_original_code) {
-        err("failed to patch app bundle. WeMod may have changed their program".to_string());
-    }
-
-    let app_bundle_contents_patched =
-        app_bundle_contents.replace(app_bundle_original_code, app_bundle_patch.as_str());
-
-    fs::write(&app_bundle, app_bundle_contents_patched)?;
+    patch_creator_mode(extracted_resource_dir.clone());
 
     println!("Done.");
 
@@ -322,7 +348,13 @@ fn main() -> std::io::Result<()> {
                 match version_compare::compare(tag_name.unwrap().replace("v", ""), VERSION) {
                     Ok(result) => {
                         if result == Cmp::Gt {
-                            println!("{}", "UPDATE AVAILABLE: There is a new update available.".on_bright_blue().white().bold());
+                            println!(
+                                "{}",
+                                "UPDATE AVAILABLE: There is a new update available."
+                                    .on_bright_blue()
+                                    .white()
+                                    .bold()
+                            );
                             updates::update();
                             exit(0);
                         }

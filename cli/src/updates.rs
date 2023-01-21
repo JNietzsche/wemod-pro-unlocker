@@ -1,5 +1,8 @@
-
-use std::{fs, env::{temp_dir, current_exe}, process::Command};
+use std::{
+    env::{current_exe, temp_dir},
+    fs,
+    process::Command,
+};
 
 pub fn get_latest_release() -> Option<serde_json::Value> {
     let request_url = "https://api.github.com/repos/bennett-sh/wemod-pro-unlocker/releases/latest";
@@ -44,18 +47,10 @@ pub fn update() {
     match fs::write(&updater_file, &updater) {
         Err(err) => println!("failed to create updater: {}", err),
         Ok(_) => {
-            Command::new(
-                &updater_file
-                            .canonicalize()
-                            .unwrap()
-                            .to_str()
-                            .unwrap()
-            )
+            Command::new(&updater_file.canonicalize().unwrap().to_str().unwrap())
                 .arg(current_exe().unwrap())
                 .spawn()
                 .expect("failed to start updater");
         }
     };
-
-
 }
