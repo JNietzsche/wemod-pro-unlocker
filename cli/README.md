@@ -2,7 +2,7 @@
   <h1>WeMod Pro Unlocker - CLI</h1>
   <h4>This program patches the WeMod app to think you're a pro subscriber.</h4>
   <img src="https://img.shields.io/crates/v/wemod-pro-unlocker?color=purple" alt="Version on Crates.io">
-  <img src="https://img.shields.io/crates/d/wemod-pro-unlocker?color=red" alt="Downloads">
+  <img src="https://img.shields.io/github/downloads/bennett-sh/wemod-pro-unlocker/total?label=GitHub%20Downloads" alt="Downloads on GitHub">
   <img src="https://img.shields.io/crates/l/wemod-pro-unlocker?color=green" alt="License">
 
 
@@ -19,12 +19,7 @@
 #### Note: after following any of the steps below, you must restart WeMod (make sure to also close it from the tray)
 For installation, you have three options.
 1. Download the pre-built executable [here](https://github.com/bennett-sh/wemod-pro-unlocker/releases/latest/download/wemod-pro-unlocker.exe)
-2. (Currently not available due to Cargo issue) Install Cargo, then run
-```
-cargo install wemod-pro-unlocker
-wemod-pro-unlocker
-```
-3. (not recommended) Manually build it from source
+2. (not recommended) Manually build it from source
 
 <br/>
 
