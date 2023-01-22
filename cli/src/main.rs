@@ -5,6 +5,7 @@ use std::{collections::HashMap, env, fs, path::PathBuf, process::exit};
 pub const VERSION: &str = env!("CARGO_PKG_VERSION");
 
 mod asar;
+mod files;
 mod folders;
 mod patches;
 mod updates;

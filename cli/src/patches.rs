@@ -1,7 +1,8 @@
+use crate::files;
 use std::{collections::HashMap, fs, path::PathBuf};
 
 pub fn patch_pro_mode(extracted_resource_dir: PathBuf, opts: &HashMap<String, String>) {
-    for app_bundle in get_all_app_bundles(extracted_resource_dir) {
+    for app_bundle in files::get_all_app_bundles(extracted_resource_dir) {
         let contents_result = fs::read_to_string(&app_bundle);
 
         if contents_result.is_err() {
@@ -43,42 +44,8 @@ pub fn patch_pro_mode(extracted_resource_dir: PathBuf, opts: &HashMap<String, St
     }
 }
 
-fn get_all_app_bundles(extracted_resource_dir: PathBuf) -> Vec<PathBuf> {
-    let mut app_bundles = vec![];
-    let ls_result = fs::read_dir(extracted_resource_dir);
-
-    if ls_result.is_err() {
-        crate::err(format!(
-            "failed to find app bundle file: {}",
-            ls_result.unwrap_err()
-        ));
-        return app_bundles;
-    }
-
-    for file_result in ls_result.unwrap() {
-        if file_result.is_err() {
-            println!(
-                "error while finding app bundle file: {}",
-                file_result.unwrap_err()
-            );
-            continue;
-        }
-        let file = file_result.unwrap();
-        let file_name_os = &file.file_name();
-        let file_name = file_name_os.to_str().unwrap();
-
-        if !(file_name.starts_with("app-") && file_name.ends_with(".js")) {
-            continue;
-        }
-
-        app_bundles.push(file.path());
-    }
-
-    app_bundles
-}
-
 pub fn patch_creator_mode(extracted_resource_dir: PathBuf) {
-    for app_bundle in get_all_app_bundles(extracted_resource_dir) {
+    for app_bundle in files::get_all_app_bundles(extracted_resource_dir) {
         let contents_result = fs::read_to_string(&app_bundle);
 
         if contents_result.is_err() {
@@ -105,33 +72,8 @@ pub fn patch_creator_mode(extracted_resource_dir: PathBuf) {
 }
 
 pub fn patch_vendor_bundle(extracted_resource_dir: PathBuf) {
-    let ls_result = fs::read_dir(extracted_resource_dir);
-
-    if ls_result.is_err() {
-        crate::err(format!(
-            "failed to find vendor bundle file: {}",
-            ls_result.unwrap_err()
-        ));
-        return;
-    }
-
-    for file_result in ls_result.unwrap() {
-        if file_result.is_err() {
-            println!(
-                "error while finding vendor bundle file: {}",
-                file_result.unwrap_err()
-            );
-            continue;
-        }
-        let file = file_result.unwrap();
-        let file_name_os = &file.file_name();
-        let file_name = file_name_os.to_str().unwrap();
-
-        if !(file_name.starts_with("vendors-") && file_name.ends_with(".js")) {
-            continue;
-        }
-
-        let contents_result = fs::read_to_string(&file.path());
+    for vendor_bundle in files::get_all_vendor_bundles(extracted_resource_dir) {
+        let contents_result = fs::read_to_string(&vendor_bundle);
 
         if contents_result.is_err() {
             println!(
@@ -149,7 +91,7 @@ pub fn patch_vendor_bundle(extracted_resource_dir: PathBuf) {
 
         contents.insert_str(0, &vendor_bundle_patch);
 
-        let write_result = fs::write(file.path(), contents);
+        let write_result = fs::write(vendor_bundle, contents);
 
         if write_result.is_err() {
             println!(

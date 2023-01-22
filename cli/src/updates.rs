@@ -6,7 +6,7 @@ use std::{
 };
 use version_compare::Cmp;
 
-pub fn get_latest_release() -> Option<serde_json::Value> {
+fn get_latest_release() -> Option<serde_json::Value> {
     let request_url = "https://api.github.com/repos/bennett-sh/wemod-pro-unlocker/releases/latest";
     let request = minreq::Request::new(minreq::Method::Get, request_url)
         .with_header("User-Agent", "wmpu-cli");
@@ -36,7 +36,7 @@ pub fn get_latest_release() -> Option<serde_json::Value> {
     None
 }
 
-pub fn update() {
+fn update() {
     let updater = include_bytes!("../bin/wemod-pro-unlocker-updater.exe");
     let updater_file = temp_dir().join("wemod-pro-unlocker-updater.exe");
 
