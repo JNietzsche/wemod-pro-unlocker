@@ -19,7 +19,8 @@
 #### Note: after following any of the steps below, you must restart WeMod (make sure to also close it from the tray)
 For installation, you have three options.
 1. Download the pre-built executable [here](https://github.com/bennett-sh/wemod-pro-unlocker/releases/latest/download/wemod-pro-unlocker.exe)
-2. (not recommended) Manually build it from source
+2. Install it using cargo: ```cargo install wemod-pro-unlocker```
+3. (not recommended) Manually build it from source
 
 <br/>
 
