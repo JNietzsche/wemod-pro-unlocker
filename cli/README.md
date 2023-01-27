@@ -29,7 +29,7 @@ For installation, you have three options.
 | --wemod-dir <dir>         	 	 	 	 	 	 	          	  | Path to your WeMod dir. By default, this is "%localappdata%/WeMod".                                         	| C:\WeMod
 | --wemod-version <version> 	 	 	 	 	 	 	          	  | The version to patch. By default, this will be the latest version installed. 	                                | 8.3.6
 | --account <json>            	 	 	 	              	  | Overwrites the account data. You can find all available options by searching for /v3/account in the dev tools | username:'myaccount',email:'test'
-| -no-update | -offline            	 	              	  | Doesn't check for/install updates                                                                             | ---
+| -no-update / -offline            	 	              	  | Doesn't check for/install updates                                                                             | ---
 | -v                          	 	 	 	 	            	  | Prints out the version info. Will cancel everything else                                                      | ---
 
 <br/>
