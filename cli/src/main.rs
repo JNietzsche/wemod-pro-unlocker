@@ -2,6 +2,8 @@ use colored::Colorize;
 use simpleargs::SimpleArgs;
 use std::{collections::HashMap, env, fs, path::PathBuf, process::exit};
 
+use crate::patches::patch_index_js;
+
 pub const VERSION: &str = env!("CARGO_PKG_VERSION");
 
 mod asar;
@@ -30,18 +32,9 @@ fn patch(extracted_resource_dir: PathBuf, opts: &HashMap<String, String>) -> std
 
     println!("Done.");
 
-    let index_js = extracted_resource_dir.join("index.js");
-
-    if !index_js.exists() || !index_js.is_file() {
-        err("index.js not found. your WeMod version may not be supported.".to_string())
-    }
-
     println!("Patching index.js...");
 
-    let index_js_contents =
-        fs::read_to_string(&index_js)?.replace("d.devMode", "process.argv.includes('-dev')");
-
-    fs::write(index_js, index_js_contents)?;
+    patch_index_js(extracted_resource_dir.clone());
 
     println!("Done.");
 
@@ -118,7 +111,7 @@ fn main() -> std::io::Result<()> {
     };
 
     println!(
-        "Attempting to patch WeMod version {}...",
+        "Attempting to patch WeMod v{}...",
         versions::get_version_from_path(wemod_version_folder)
     );
 

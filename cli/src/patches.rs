@@ -71,6 +71,19 @@ pub fn patch_creator_mode(extracted_resource_dir: PathBuf) {
     }
 }
 
+pub fn patch_index_js(extracted_resource_dir: PathBuf) {
+    let index_js = extracted_resource_dir.join("index.js");
+    if !index_js.exists() || !index_js.is_file() {
+        crate::err("index.js not found. your WeMod version may not be supported.".to_string())
+    }
+
+    let index_js_contents = fs::read_to_string(&index_js)
+        .expect("failed to read index.js")
+        .replace("if(d.devMode)", "if(process.argv.includes('-dev'))");
+
+    fs::write(index_js, index_js_contents).expect("failed to write index.js");
+}
+
 pub fn patch_vendor_bundle(extracted_resource_dir: PathBuf) {
     for vendor_bundle in files::get_all_vendor_bundles(extracted_resource_dir) {
         let contents_result = fs::read_to_string(&vendor_bundle);
