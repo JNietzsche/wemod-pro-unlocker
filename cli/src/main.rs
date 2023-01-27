@@ -98,18 +98,6 @@ fn main() -> std::io::Result<()> {
 
     let resource_dir = wemod_version_folder.join("resources");
 
-    let asar_folder = if opts.contains_key("asar") {
-        let folder = PathBuf::from(opts.get("asar").unwrap());
-
-        if !folder.exists() {
-            err("asar path specified does not exist.".to_string());
-        }
-
-        folder
-    } else {
-        PathBuf::from(".")
-    };
-
     println!(
         "Attempting to patch WeMod v{}...",
         versions::get_version_from_path(wemod_version_folder)
@@ -130,14 +118,12 @@ fn main() -> std::io::Result<()> {
     }
 
     asar::run(
-        asar_folder.clone(),
         resource_dir.clone(),
         vec![
             "extract".to_string(),
             "app.asar".to_string(),
             "app".to_string(),
         ],
-        &opts,
     );
 
     println!("Done.");
@@ -149,14 +135,12 @@ fn main() -> std::io::Result<()> {
     println!("Repacking resources...");
 
     asar::run(
-        asar_folder.clone(),
         resource_dir,
         vec![
             "pack".to_string(),
             "app".to_string(),
             "app.asar".to_string(),
         ],
-        &opts,
     );
 
     println!("Done.");

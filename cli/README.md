@@ -24,18 +24,11 @@ For installation, you have three options.
 
 <br/>
 
-## ➕ Requirements
-- [asar](https://github.com/electron/asar)
-
-<br/>
-
 ## ⚙️ Configuration
 | Argument                  	| Description                                                                                                                           	| Example
 |---------------------------	|---------------------------------------------------------------------------------------------------------------------------------------	|----------------------------------
 | --wemod-dir <dir>         	 	 	 	 	 	 	          	  | Path to your WeMod dir. By default, this is "%localappdata%/WeMod".                                         	| C:\WeMod
 | --wemod-version <version> 	 	 	 	 	 	 	          	  | The version to patch. By default, this will be the latest version installed. 	                                | 8.3.6
-| --asar <folder containing asar.cmd or --asar-bin>     | Path to a folder containing "asar.cmd" or the bin specified with --asar-bin.                                 	| C:\asar
-| --asar-bin <file in --asar>                           | The asar executable in the folder specified in --asar (or in a default npm folder)                           	| asar.cmd
 | --account <json>            	 	 	 	              	  | Overwrites the account data. You can find all available options by searching for /v3/account in the dev tools | username:'myaccount',email:'test'
 | -no-update | -offline            	 	              	  | Doesn't check for/install updates                                                                             | ---
 | -v                          	 	 	 	 	            	  | Prints out the version info. Will cancel everything else                                                      | ---
