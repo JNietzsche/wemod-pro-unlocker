@@ -2,7 +2,7 @@
   <h1>WeMod Pro Unlocker - GUI</h1>
   <h4>This program patches the WeMod app to think you're a pro subscriber.</h4>
   <img src="https://img.shields.io/github/downloads/bennett-sh/wemod-pro-unlocker/total" alt="Downloads on GitHub">
-  <img src="https://img.shields.io/crates/v/wemod-pro-unlocker?color=purple" alt="Version on Crates.io">
+  <img src="https://img.shields.io/github/v/release/bennett-sh/wemod-pro-unlocker.svg" alt="Latest version">
   <img src="https://img.shields.io/crates/l/wemod-pro-unlocker?color=green" alt="License">
 
 

@@ -6,6 +6,7 @@ homepage = "https://github.com/bennett-sh/wemod-pro-unlocker"
 repository = "https://github.com/bennett-sh/wemod-pro-unlocker"
 version = "0.14.0"
 edition = "2021"
+publish = false
 
 [dependencies]
 colored = "2.0.0"
