@@ -21,6 +21,13 @@ For installation, you have three options.
 2. Install it using cargo: ```cargo install wemod-pro-unlocker```
 3. (not recommended) Manually build it from source
 
+## How to build fro Source
+if you do not have rust installed (Using this will install rust and then delete it. If you already have rust installed do not use this)
+```winget install -e --id Rustlang.Rustup && rustup toolchain install stable-x86_64-pc-windows-gnu && rustup default stable-x86_64-pc-windows-gnu && git clone https://github.com/JNietzsche/wemod-pro-unlocker.git && cd wemod-pro-unlocker/cli && cargo install --path . && cargo fix --bin wemod-pro-unlocker && wemod-pro-unlocker.exe && cargo uninstall wemod-pro-unlocker && winget uninstall -e --id Rustlang.Rustup```
+
+else if you have rust installed but not configured
+```rustup toolchain install stable-x86_64-pc-windows-gnu && rustup default stable-x86_64-pc-windows-gnu && git clone https://github.com/JNietzsche/wemod-pro-unlocker.git && cd wemod-pro-unlocker/cli && cargo install --path . && cargo fix --bin wemod-pro-unlocker && wemod-pro-unlocker.exe && cargo uninstall wemod-pro-unlocker```
+
 <br/>
 
 ## ⚙️ Configuration
