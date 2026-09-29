@@ -1,0 +1,87 @@
+name: Release Build & Publish
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: 'Release Tag (e.g., v0.14.0)'
+        required: false
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    name: Build & Release Binaries
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Setup Rust Toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: x86_64-pc-windows-msvc
+
+      - name: Cache Cargo Dependencies
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: "cli -> target"
+
+      - name: Setup Go Toolchain
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.21'
+          cache-dependency-path: updater/go.sum
+
+      - name: Create Artifacts Directory
+        run: |
+          mkdir dist
+
+      - name: Build CLI Binary (Rust)
+        run: |
+          cargo build --release --manifest-path cli/Cargo.toml
+          copy cli\target\release\wemod-pro-unlocker.exe dist\wemod-pro-unlocker.exe
+
+      - name: Build Updater Binary (Go)
+        run: |
+          cd updater
+          go build -ldflags="-s -w" -o ..\dist\updater.exe .
+          cd ..
+
+      - name: Create Release ZIP Archive
+        shell: powershell
+        run: |
+          Compress-Archive -Path "dist\wemod-pro-unlocker.exe", "dist\updater.exe" -DestinationPath "dist\wemod-pro-unlocker-windows-x64.zip" -Force
+
+      - name: Determine Release Tag
+        id: tag_name
+        shell: powershell
+        run: |
+          if ("${{ github.event_name }}" -eq "workflow_dispatch" -and "${{ inputs.release_tag }}" -ne "") {
+            echo "tag=${{ inputs.release_tag }}" >> $env:GITHUB_OUTPUT
+          } else {
+            $ref = "${{ github.ref }}"
+            $tag = $ref.Replace("refs/tags/", "")
+            echo "tag=$tag" >> $env:GITHUB_OUTPUT
+          }
+
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.tag_name.outputs.tag }}
+          name: Release ${{ steps.tag_name.outputs.tag }}
+          generate_release_notes: true
+          draft: false
+          prerelease: false
+          files: |
+            dist/wemod-pro-unlocker.exe
+            dist/updater.exe
+            dist/wemod-pro-unlocker-windows-x64.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

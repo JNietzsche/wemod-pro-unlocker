@@ -1,0 +1,38 @@
+# Build & release artifacts
+dist/
+target/
+**/target/
+*.exe
+*.dll
+*.so
+*.dylib
+!cli/bin/asar.exe
+!cli/bin/wemod-pro-unlocker-updater.exe
+
+# Rust
+cli/target/
+Cargo.lock.backup
+**/*.rs.bk
+
+# Go
+updater/*.exe
+updater/*.test
+updater/*.out
+go.work
+
+# Node / JS
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# IDE & Editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS specific files
+Thumbs.db
+Desktop.ini
+.DS_Store

@@ -2,9 +2,9 @@
 name = "wemod-pro-unlocker"
 description = "This program patches the WeMod app to think you're a pro subscriber"
 license = "MIT"
-homepage = "https://github.com/bennett-sh/wemod-pro-unlocker"
-repository = "https://github.com/bennett-sh/wemod-pro-unlocker"
-version = "0.14.0"
+homepage = "https://github.com/Allain-afk/wemod-pro-unlocker"
+repository = "https://github.com/Allain-afk/wemod-pro-unlocker"
+version = "1.0.2"
 edition = "2021"
 publish = false
 
@@ -15,3 +15,11 @@ serde_json = "1.0.91"
 simple--args = "1.1.1"
 version-compare = "0.1.0"
 minreq = { version = "2.6.0", features = [ "https-native" ] }
+
+[profile.release]
+opt-level = "z"
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true
+

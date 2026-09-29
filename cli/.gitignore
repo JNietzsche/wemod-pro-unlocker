@@ -1,5 +1,6 @@
 # Cargo build directory
-/target
+/target/
+target/
 
-# I use this script to run the patcher with my preffered settings
+# Local testing scripts
 apply.cmd

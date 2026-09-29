@@ -16,8 +16,8 @@ pub fn get_version_from_path(path: PathBuf) -> String {
 
 pub fn sort_app_versions(a: &DirEntry, b: &DirEntry) -> Ordering {
     return match version_compare::compare(
-        get_version_from_dir_entry(a.clone()),
-        get_version_from_dir_entry(b.clone()),
+        get_version_from_dir_entry(a),
+        get_version_from_dir_entry(b),
     )
     .unwrap_or(Cmp::Eq)
     {

@@ -59,7 +59,7 @@ func downloadFile(filepath string, url *string) (err error) {
 
 func getLatestReleaseURL() *string {
 	client := github.NewClient(nil)
-	release, _, err := client.Repositories.GetLatestRelease(context.Background(), "bennett-sh", "wemod-pro-unlocker")
+	release, _, err := client.Repositories.GetLatestRelease(context.Background(), "Allain-afk", "wemod-pro-unlocker")
 	if err != nil {
 		println("error: ", err)
 		os.Exit(1)

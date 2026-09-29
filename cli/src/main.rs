@@ -9,7 +9,9 @@ pub const VERSION: &str = env!("CARGO_PKG_VERSION");
 mod asar;
 mod files;
 mod folders;
+mod fuse;
 mod patches;
+mod processes;
 mod updates;
 mod versions;
 
@@ -97,11 +99,16 @@ fn main() -> std::io::Result<()> {
     };
 
     let resource_dir = wemod_version_folder.join("resources");
+    let wemod_version_folder_for_fuse = wemod_version_folder.clone();
 
     println!(
         "Attempting to patch WeMod v{}...",
         versions::get_version_from_path(wemod_version_folder)
     );
+
+    println!("Stopping running WeMod/Wand processes...");
+    processes::kill_wemod_processes();
+    println!("Done.");
 
     println!("Extracting resources...");
 
@@ -140,8 +147,15 @@ fn main() -> std::io::Result<()> {
             "pack".to_string(),
             "app".to_string(),
             "app.asar".to_string(),
+            "--unpack-dir".to_string(),
+            "static/unpacked".to_string(),
         ],
     );
+
+    println!("Done.");
+    println!("Disabling asar integrity check...");
+
+    fuse::disable_asar_integrity(wemod_version_folder_for_fuse);
 
     println!("Done.");
     println!("Cleaning up...");

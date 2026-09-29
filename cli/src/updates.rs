@@ -8,12 +8,15 @@ use version_compare::Cmp;
 use crate::files::extract_temp_file;
 
 fn get_latest_release() -> Option<serde_json::Value> {
-    let request_url = "https://api.github.com/repos/bennett-sh/wemod-pro-unlocker/releases/latest";
+    let request_url = "https://api.github.com/repos/Allain-afk/wemod-pro-unlocker/releases/latest";
     let request = minreq::Request::new(minreq::Method::Get, request_url)
         .with_header("User-Agent", "wmpu-cli");
 
     match request.send() {
         Ok(response) => {
+            if !(200..=299).contains(&response.status_code) {
+                return None;
+            }
             let text_response = match response.as_str() {
                 Ok(text) => text,
                 Err(err) => {
@@ -29,12 +32,13 @@ fn get_latest_release() -> Option<serde_json::Value> {
                 }
             };
 
-            return Some(json_response);
+            Some(json_response)
         }
-        Err(err) => println!("failed to check for updates: {}", err),
+        Err(err) => {
+            println!("failed to check for updates: {}", err);
+            None
+        }
     }
-
-    None
 }
 
 fn update() {
@@ -55,12 +59,9 @@ pub fn check(flags: &Vec<String>) {
     if !(flags.contains(&"no-update".to_string()) || flags.contains(&"offline".to_string())) {
         let latest_release = get_latest_release();
 
-        if latest_release.is_some() {
-            let release = latest_release.unwrap();
-            let tag_name = release["tag_name"].as_str();
-
-            if tag_name.is_some() {
-                match version_compare::compare(tag_name.unwrap().replace("v", ""), crate::VERSION) {
+        if let Some(release) = latest_release {
+            if let Some(tag_name) = release["tag_name"].as_str() {
+                match version_compare::compare(tag_name.replace("v", ""), crate::VERSION) {
                     Ok(result) => {
                         if result == Cmp::Gt {
                             println!(
@@ -76,8 +77,6 @@ pub fn check(flags: &Vec<String>) {
                     }
                     Err(err) => println!("failed to check for updates: {:?}", err),
                 }
-            } else {
-                println!("failed to check for updates: error while parsing json");
             }
         }
     }

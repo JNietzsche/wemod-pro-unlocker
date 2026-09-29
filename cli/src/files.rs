@@ -58,7 +58,10 @@ pub fn get_all_vendor_bundles(extracted_resource_dir: PathBuf) -> Vec<PathBuf> {
         let file_name_os = &file.file_name();
         let file_name = file_name_os.to_str().unwrap();
 
-        if !(file_name.starts_with("vendors-") && file_name.ends_with(".js")) {
+        let is_vendor = (file_name.starts_with("vendors-") || file_name.starts_with("vendor."))
+            && file_name.ends_with(".js")
+            && !file_name.ends_with(".LICENSE.txt");
+        if !is_vendor {
             continue;
         }
 

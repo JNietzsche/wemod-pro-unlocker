@@ -2,6 +2,8 @@ use crate::files;
 use std::{collections::HashMap, fs, path::PathBuf};
 
 pub fn patch_pro_mode(extracted_resource_dir: PathBuf, opts: &HashMap<String, String>) {
+    let mut found_target = false;
+
     for app_bundle in files::get_all_app_bundles(extracted_resource_dir) {
         let contents_result = fs::read_to_string(&app_bundle);
 
@@ -16,6 +18,7 @@ pub fn patch_pro_mode(extracted_resource_dir: PathBuf, opts: &HashMap<String, St
         let contents = contents_result.unwrap();
 
         if contents.contains(r#""application/json"===e.headers.get("Content-Type")"#) {
+            found_target = true;
             let app_bundle_patch = include_str!("fetchIntercept.js").to_string().replace(
                 "/*{%account%}*/",
                 if opts.contains_key("account") {
@@ -37,10 +40,19 @@ pub fn patch_pro_mode(extracted_resource_dir: PathBuf, opts: &HashMap<String, St
                 contents.replace(app_bundle_original_code, app_bundle_patch.as_str());
 
             match fs::write(&app_bundle, app_bundle_contents_patched) {
-                Ok(_) => break,
+                Ok(_) => return,
                 Err(err) => println!("failed to enable pro mode (write): {}", err),
             };
         }
+    }
+
+    if !found_target {
+        crate::err(
+            "failed to enable pro mode: no matching app bundle found. WeMod may have updated their program."
+                .to_string(),
+        );
+    } else {
+        crate::err("failed to enable pro mode: write failed for all candidate bundles.".to_string());
     }
 }
 
@@ -79,7 +91,7 @@ pub fn patch_index_js(extracted_resource_dir: PathBuf) {
 
     let index_js_contents = fs::read_to_string(&index_js)
         .expect("failed to read index.js")
-        .replace("if(d.devMode)", "if(process.argv.includes('-dev'))");
+        .replace("if(p.devMode)", "if(process.argv.includes('-dev'))");
 
     fs::write(index_js, index_js_contents).expect("failed to write index.js");
 }
