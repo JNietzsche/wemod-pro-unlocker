@@ -39,20 +39,34 @@ jobs:
           go-version: '1.21'
           cache-dependency-path: updater/go.sum
 
+      - name: Run Updater Tests (Go)
+        working-directory: updater
+        run: go test ./...
+
+      - name: Run CLI Tests (Rust)
+        run: cargo test --manifest-path cli/Cargo.toml
+
       - name: Create Artifacts Directory
         run: |
           mkdir dist
 
+      # Build the updater first: the CLI embeds cli/bin/wemod-pro-unlocker-updater.exe
+      # via include_bytes!, so it is refreshed from updater/ before compiling the CLI.
+      - name: Build Updater Binary (Go)
+        shell: powershell
+        run: |
+          Push-Location updater
+          go build -trimpath -ldflags="-s -w" -o ..\dist\updater.exe .
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          Pop-Location
+          Copy-Item dist\updater.exe cli\bin\wemod-pro-unlocker-updater.exe -Force
+
       - name: Build CLI Binary (Rust)
+        shell: powershell
         run: |
           cargo build --release --manifest-path cli/Cargo.toml
-          copy cli\target\release\wemod-pro-unlocker.exe dist\wemod-pro-unlocker.exe
-
-      - name: Build Updater Binary (Go)
-        run: |
-          cd updater
-          go build -ldflags="-s -w" -o ..\dist\updater.exe .
-          cd ..
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          Copy-Item cli\target\release\wemod-pro-unlocker.exe dist\wemod-pro-unlocker.exe
 
       - name: Create Release ZIP Archive
         shell: powershell

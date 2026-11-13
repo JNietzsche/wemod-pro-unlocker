@@ -3,22 +3,33 @@ use std::{path::PathBuf, process::Command};
 use crate::files::extract_temp_file;
 
 pub fn run(dir: PathBuf, args: Vec<String>) {
+    let action = args.first().cloned().unwrap_or_default();
+
     let asar = match extract_temp_file("asar.exe", include_bytes!("../bin/asar.exe")) {
         Ok(f) => f,
-        Err(err) => {
-            crate::err(format!("failed to extract asar: {}", err).to_string());
-            return;
-        }
+        Err(err) => crate::fail(format!("failed to extract asar: {}", err)),
     };
 
-    let cmd = Command::new(asar).current_dir(dir).args(args).spawn();
+    let status = match Command::new(&asar).current_dir(&dir).args(&args).status() {
+        Ok(status) => status,
+        Err(err) => crate::fail(format!(
+            "failed to run asar {} ({}): {}",
+            action,
+            asar.display(),
+            err
+        )),
+    };
 
-    if cmd.is_err() {
-        match cmd.unwrap_err().kind() {
-            std::io::ErrorKind::NotFound => crate::err("failed to extract asar".to_string()),
-            _ => crate::err("failed run asar command".to_string()),
-        }
-    } else {
-        cmd.unwrap().wait().unwrap();
+    if !status.success() {
+        let code = status
+            .code()
+            .map(|c| c.to_string())
+            .unwrap_or_else(|| "unknown".to_string());
+        crate::fail(format!(
+            "asar {} failed with exit code {} in {}. Make sure Wand/WeMod is closed and the files are not in use, then try again.",
+            action,
+            code,
+            dir.display()
+        ));
     }
 }
