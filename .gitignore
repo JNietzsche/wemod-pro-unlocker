@@ -31,6 +31,8 @@ yarn-error.log*
 .vscode/
 *.swp
 *.swo
+docs/
+
 
 # OS specific files
 Thumbs.db

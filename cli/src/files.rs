@@ -84,3 +84,52 @@ pub fn extract_temp_file(name: &str, bytes: &'static [u8]) -> std::io::Result<Pa
         Ok(_) => Ok(file),
     }
 }
+
+pub fn copy_dir_all(
+    src: impl AsRef<std::path::Path>,
+    dst: impl AsRef<std::path::Path>,
+) -> std::io::Result<()> {
+    fs::create_dir_all(&dst)?;
+    for entry in fs::read_dir(src)? {
+        let entry = entry?;
+        let ty = entry.file_type()?;
+        let dest_path = dst.as_ref().join(entry.file_name());
+        if ty.is_dir() {
+            copy_dir_all(entry.path(), dest_path)?;
+        } else {
+            fs::copy(entry.path(), dest_path)?;
+        }
+    }
+    Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::time::{SystemTime, UNIX_EPOCH};
+
+    #[test]
+    fn test_copy_dir_all() {
+        let unique = SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .unwrap()
+            .as_nanos();
+        let src = temp_dir().join(format!("wmpu-test-src-{unique}"));
+        let dst = temp_dir().join(format!("wmpu-test-dst-{unique}"));
+
+        fs::create_dir_all(src.join("sub")).unwrap();
+        fs::write(src.join("root.txt"), b"root content").unwrap();
+        fs::write(src.join("sub").join("nested.txt"), b"nested content").unwrap();
+
+        copy_dir_all(&src, &dst).unwrap();
+
+        assert_eq!(fs::read(dst.join("root.txt")).unwrap(), b"root content");
+        assert_eq!(
+            fs::read(dst.join("sub").join("nested.txt")).unwrap(),
+            b"nested content"
+        );
+
+        let _ = fs::remove_dir_all(&src);
+        let _ = fs::remove_dir_all(&dst);
+    }
+}

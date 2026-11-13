@@ -89,9 +89,12 @@ pub fn patch_index_js(extracted_resource_dir: PathBuf) {
         crate::err("index.js not found. your WeMod version may not be supported.".to_string())
     }
 
-    let index_js_contents = fs::read_to_string(&index_js)
+    let mut index_js_contents = fs::read_to_string(&index_js)
         .expect("failed to read index.js")
         .replace("if(p.devMode)", "if(process.argv.includes('-dev'))");
+
+    let devtools_hook = "\n;try{const{app:a,globalShortcut:g,BrowserWindow:b}=require('electron');a.whenReady().then(()=>{g.register('F12',()=>{const w=b.getFocusedWindow();if(w)w.webContents.openDevTools({mode:'detach'});});g.register('CommandOrControl+Shift+I',()=>{const w=b.getFocusedWindow();if(w)w.webContents.openDevTools({mode:'detach'});});});}catch(_){}\n";
+    index_js_contents.push_str(devtools_hook);
 
     fs::write(index_js, index_js_contents).expect("failed to write index.js");
 }

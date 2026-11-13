@@ -38,11 +38,18 @@ If you installed WeMod in a custom location or want to pass custom parameters, y
 
 | Flag / Option | Description | Example |
 |---|---|---|
-| `--wemod-dir <path>` | Path to custom WeMod/Wand directory (Default: `%LOCALAPPDATA%\WeMod`) | `--wemod-dir "D:\Games\WeMod"` |
-| `--wemod-version <version>` | Specific version to patch (Default: latest detected version) | `--wemod-version "8.3.6"` |
+| `--wemod-dir <path>` | Path to a custom Wand/WeMod directory. Default: `%LOCALAPPDATA%\Wand` is checked first, then `%LOCALAPPDATA%\WeMod` (a folder is only used if it contains a complete `app-*\resources\app.asar` install) | `--wemod-dir "D:\Games\Wand"` |
+| `--wemod-version <version>` | Specific version to patch (Default: latest complete installed version) | `--wemod-version "12.41.1"` |
 | `--account <json>` | Custom account metadata override | `--account "username:'pro',email:'test@test.com'"` |
-| `-no-update` / `-offline` | Skip checking for unlocker updates on launch | `-offline` |
-| `-v` | Display the unlocker version | `-v` |
+| `--creator` | Enable creator mode (optional, for trainer creators) | `--creator` |
+| `--no-update` / `--offline` | Skip checking for unlocker updates on launch (single-dash forms also work) | `--offline` |
+| `--pause` | Always wait for <kbd>Enter</kbd> before exiting, even inside an existing terminal | `--pause` |
+| `--no-pause` | Never wait for <kbd>Enter</kbd> before exiting (useful for scripts) | `--no-pause` |
+| `-v` / `--version` | Display the unlocker version | `-v` |
+| `-h` / `--help` | Show usage and all options | `--help` |
+
+> [!NOTE]
+> When launched by double-clicking (its own console window), the unlocker waits for <kbd>Enter</kbd> before closing so you can read the output and any errors. When run from CMD / PowerShell / Windows Terminal it exits normally. During a self-update it exits immediately so the updater can replace the executable.
 
 ---
 
@@ -83,21 +90,31 @@ build.bat
 
 ### Manual Build Instructions
 
-If you prefer building each project individually:
+`build.ps1` builds the Go updater first and copies it to `cli/bin/wemod-pro-unlocker-updater.exe`, which the CLI embeds via `include_bytes!`. Pass `-NoUpdaterSync` to keep the committed copy, or `-RunTests` to run both test suites before building.
 
-#### 1. Build CLI (Rust):
+If you prefer building each project individually (updater first, so the CLI embeds the current updater):
+
+#### 1. Build Updater (Go):
+```cmd
+cd updater
+go build -trimpath -ldflags="-s -w" -o ..\dist\updater.exe .
+copy ..\dist\updater.exe ..\cli\bin\wemod-pro-unlocker-updater.exe
+```
+*Binary output: `dist/updater.exe`*
+
+#### 2. Build CLI (Rust):
 ```cmd
 cd cli
 cargo build --release
 ```
 *Binary output: `cli/target/release/wemod-pro-unlocker.exe`*
 
-#### 2. Build Updater (Go):
+### Running Tests
+
 ```cmd
-cd updater
-go build -ldflags="-s -w" -o ..\dist\updater.exe .
+cargo test --manifest-path cli/Cargo.toml
+cd updater && go test ./...
 ```
-*Binary output: `dist/updater.exe`*
 
 ---
 
@@ -109,6 +126,8 @@ GitHub Actions workflow is configured under [`.github/workflows/release.yml`](.g
   - Pushing a new Git version tag (e.g. `v0.14.0`): `git tag v0.14.0 && git push origin v0.14.0`
   - Manual trigger via **Actions tab > Release Build & Publish > Run workflow** (`workflow_dispatch`).
 - **Pipeline Actions**:
+  - Runs `go test ./...` (updater) and `cargo test` (CLI); the release is aborted if any test fails.
+  - Builds the Go updater first and embeds it into the CLI.
   - Compiles Rust CLI with size & performance optimizations (`opt-level = "z"`, LTO enabled, stripped symbols).
   - Compiles Go Updater with stripped symbol flags (`-ldflags="-s -w"`).
   - Packages binaries into a ZIP archive.
